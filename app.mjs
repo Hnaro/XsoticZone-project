@@ -10,8 +10,7 @@ import { dbclient, rundb } from './mongoDBclient.mjs';
 runApp();
 rundb();
 export const db = dbclient.db("XsoticZone");
-
 app.use(express.json());
 
 app.use('/', indexRouter);
-app.use('/match', xsoticZoneRouter);
+app.use('/xzone', xsoticZoneRouter);

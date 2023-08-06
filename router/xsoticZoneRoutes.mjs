@@ -14,16 +14,26 @@ router.post('/matchMove', async (req, res) => {
     console.log(req.body);
     //const results = await matchCollections.insertOne(moveModel);
     //console.log(results);
-    const results = await matchCollections.updateOne({player: "john"},{move:"c2r1"})
+    //const results = await matchCollections.updateOne({player: "john"},{move:"c2r1"})
     res.send(results);
 });
 
 // creates the session with UUID
 router.post('/createSession', async (req, res) => {
-
+    console.log(req.body)
+    if (req.body) {
+        res.send("created session complete!!");
+    } else {
+       res.send("session not created!");
+    }
 });
 
 // create player
 router.post('/createPlayer', async (req, res) => {
-
+    console.log(req.body)
+    if (req.body) {
+        res.send("created player complete!!");
+    } else {
+       res.send("player not created!");
+    }
 })
