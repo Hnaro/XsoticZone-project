@@ -1,0 +1,10 @@
+
+<div id="main-board-base-container">
+  <div id="main-board-container">
+    <div *ngFor="let row of rowsModel; let i = index" id={{i}} class="row-container">
+      <div class="r-boxes-container" (click)="move(i, 0,'r'+(i+1)+'-c1')" [innerHTML]="row.rows[0].colOutput"></div>
+      <div class="r-boxes-container" (click)="move(i, 1,'r'+(i+1)+'-c2')" [innerHTML]="row.rows[1].colOutput"></div>
+      <div class="r-boxes-container" (click)="move(i, 2,'r'+(i+1)+'-c3')" [innerHTML]="row.rows[2].colOutput"></div>
+    </div>
+  </div>
+</div>
