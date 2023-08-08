@@ -12,7 +12,7 @@ export class TictactoeGameComponent implements OnInit {
   rowsModel: Array<RowsModel> = new Array<RowsModel>();
 
   ngOnInit(): void {
-    // set an interval for checking opponents move
+    // set an interval for checking opponents mov
     // create an alternate turn
     // if current user has move then send it to database
     // check current user in database wait for opponents turn
