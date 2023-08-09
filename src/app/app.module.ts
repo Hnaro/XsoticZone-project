@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http'
 import { TictactoeGameComponent } from './mini-games/tictactoe-game/tictactoe-game.component';
+import { BackendServiceService } from './services/backend-service.service';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,7 @@ import { TictactoeGameComponent } from './mini-games/tictactoe-game/tictactoe-ga
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [BackendServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

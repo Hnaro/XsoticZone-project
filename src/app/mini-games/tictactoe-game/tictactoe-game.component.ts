@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RowsModel, Column } from '../../model/rowModel';
+import { BackendServiceService } from 'src/app/services/backend-service.service';
 
 @Component({
   selector: 'app-tictactoe-game',
@@ -11,7 +12,22 @@ export class TictactoeGameComponent implements OnInit {
   test: string = "";
   rowsModel: Array<RowsModel> = new Array<RowsModel>();
 
+  // test data
+  currentUser: string = "Arhon";
+  currentCharacter: string = "O";
+
+  constructor(private backendService: BackendServiceService) {}
+
   ngOnInit(): void {
+    this.backendService.checkBackend().then(value => {
+      let subs = value.subscribe(value => {
+        console.log(value);
+      })
+      console.log(subs);
+
+    }).catch(err => {
+      console.log("err")
+    })
     // set an interval for checking opponents move
     // create an alternate turn
     // if current user has move then send it to database
@@ -33,20 +49,25 @@ export class TictactoeGameComponent implements OnInit {
     }
     console.log(this.rowsModel);
   }
-  rowsSet(rmodelIndex: number, rowsIndex: number, playerMove: string) {
-      this.rowsModel[rmodelIndex].rows[rowsIndex].colOutput = playerMove;
+  rowsSet(rmodelIndex: number, rowsIndex: number, currCharacter: string, playerMove: string) {
+      this.rowsModel[rmodelIndex].rows[rowsIndex].colOutput = currCharacter;
+      this.backendService.sendMatchMove(this.currentUser, playerMove).then(observe => {
+        observe.subscribe(body => {
+          console.log(body)
+        })
+      });
   }
   move(index: number, columnIndex: number ,m: string) {
     console.log(m);
     switch(index) {
       case 0:
-          this.rowsSet(index,columnIndex,"O");
+          this.rowsSet(index,columnIndex, this.currentCharacter, m);
         break;
       case 1:
-        this.rowsSet(index,columnIndex,"O");
+        this.rowsSet(index,columnIndex, this.currentCharacter, m);
         break;
       case 2:
-        this.rowsSet(index,columnIndex,"O");
+        this.rowsSet(index,columnIndex,this.currentCharacter, m);
       break;
     }
     console.log(this.rowsModel);
