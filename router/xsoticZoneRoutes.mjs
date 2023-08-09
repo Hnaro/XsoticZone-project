@@ -8,14 +8,19 @@ router.post('/matchMove', async (req, res) => {
     // database collections
     const matchCollections = db.collection("matches");
     const moveModel = {
-        move: "c1r1",
-        player: "john"
+        move: req.body.move,
+        player: req.body.playerName
     }
+    console.log(moveModel)
     console.log(req.body);
-    //const results = await matchCollections.insertOne(moveModel);
-    //console.log(results);
+    const results = await matchCollections.insertOne(moveModel);
+    console.log(results);
     //const results = await matchCollections.updateOne({player: "john"},{move:"c2r1"})
-    res.send(results);
+    if (req.body) {
+        res.send({ response: "status ok", sentName: req.body.playerName, sentMove: req.body.move })
+    } else {
+        res.send({response: "status error"});
+    }
 });
 
 // creates the session with UUID
