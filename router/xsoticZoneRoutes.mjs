@@ -1,7 +1,7 @@
 import * as express from 'express';
 export const router = express.Router();
 import { db } from '../app.mjs';
-import { json } from 'node:stream/consumers';
+import { MoveModel } from '../model/moveModel.js';
 
 // watch movement of each player record it 
 router.post('/matchMove', async (req, res) => {
