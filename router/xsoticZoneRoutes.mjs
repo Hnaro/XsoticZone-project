@@ -11,13 +11,16 @@ router.post('/matchMove', async (req, res) => {
         move: req.body.move,
         player: req.body.playerName
     }
-    console.log(moveModel)
+    console.log(moveModel) 
     console.log(req.body);
     const results = await matchCollections.insertOne(moveModel);
     console.log(results);
     //const results = await matchCollections.updateOne({player: "john"},{move:"c2r1"})
     if (req.body) {
-        res.send({ response: "status ok", sentName: req.body.playerName, sentMove: req.body.move })
+        res.send({ response: "status ok", 
+        sentName: req.body.playerName, 
+        sentMove: req.body.move 
+    })
     } else {
         res.send({response: "status error"});
     }
