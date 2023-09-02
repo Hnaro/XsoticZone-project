@@ -1,0 +1,11 @@
+#header-container {
+    width: 100% auto;
+    border: 0.2em solid black;
+}
+nav ul {
+    display: flex;
+    list-style-type: none;
+}
+#links-icon-container {
+    display: flex;
+}

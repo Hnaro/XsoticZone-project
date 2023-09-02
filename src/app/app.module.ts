@@ -6,11 +6,15 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http'
 import { BackendServiceService } from './services/backend-service.service';
 import { HeaderComponent } from './components/header/header.component';
+import { TictactoeBoardComponent } from './components/tictactoe-board/tictactoe-board.component';
+import { TictactoeboxComponent } from './components/tictactoebox/tictactoebox.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    TictactoeBoardComponent,
+    TictactoeboxComponent
   ],
   imports: [
     BrowserModule,

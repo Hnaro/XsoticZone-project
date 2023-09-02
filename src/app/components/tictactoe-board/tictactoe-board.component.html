@@ -1,0 +1,7 @@
+<div id="tictactoeboard-container">
+    <div *ngFor="let count of rowCount, let i=index" class="row-container">
+        <app-tictactoebox [rowId]="i+1"></app-tictactoebox>
+        <app-tictactoebox [rowId]="i+1"></app-tictactoebox>
+        <app-tictactoebox [rowId]="i+1"></app-tictactoebox>
+    </div>
+</div>
