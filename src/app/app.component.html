@@ -1,9 +1,12 @@
 <app-header></app-header>
 <div id="outer-container">
-    <app-tictactoe-board></app-tictactoe-board>
+    <app-tictactoe-board 
+    [currentPlayerCharacter]="currentPlayerCharacter" 
+    [currentUser]="currentUser"
+    [currentUserUUID]="currentUserUUID"></app-tictactoe-board>
     <div id="buttons-container">
-        <button>Create Session</button>
-        <button>Join Session</button>
+        <button (click)="onCreateSession()">Create Session</button>
+        <button (click)="onJoinSession()">Join Session</button>
     </div>
 </div>
 

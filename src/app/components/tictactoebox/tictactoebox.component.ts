@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-tictactoebox',
@@ -10,6 +10,6 @@ export class TictactoeboxComponent {
   @Input() value: string = "";
 
   onClick() {
-    
+    console.log("rowID: "+this.rowId)
   }
 }

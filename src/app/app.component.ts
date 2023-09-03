@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'XsoticZoneWeb';
+  title = 'TicTacToe';
+  
+  // current player session
+  currentUser: string = "John";
+  currentUserUUID: string = "testUUID";
+  currentPlayerCharacter = "X";
+
+  onCreateSession() {}
+  onJoinSession() {}
 }
