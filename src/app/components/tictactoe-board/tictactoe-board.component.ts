@@ -17,7 +17,10 @@ export class TictactoeBoardComponent implements OnInit {
   @Input() currentPlayerCharacter: string | undefined;
 
   // gameservice for controlling the game mechanics
-  constructor(gameService: TictactoeGamecontrolService) {}
+  constructor(gameService: TictactoeGamecontrolService) {
+    gameService = new TictactoeGamecontrolService();
+  }
+
   ngOnInit(): void {
     console.log("current player info: \n player name: "
     +this.currentUser+"\n player UUID: "+

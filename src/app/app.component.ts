@@ -13,6 +13,10 @@ export class AppComponent {
   currentUserUUID: string = "testUUID";
   currentPlayerCharacter = "X";
 
-  onCreateSession() {}
-  onJoinSession() {}
+  onCreateSession() {
+    console.log("create session clicked")
+  }
+  onJoinSession() {
+    console.log("Join session clicked")
+  }
 }

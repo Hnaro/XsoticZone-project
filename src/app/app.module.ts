@@ -8,6 +8,7 @@ import { BackendServiceService } from './services/backend-service.service';
 import { HeaderComponent } from './components/header/header.component';
 import { TictactoeBoardComponent } from './components/tictactoe-board/tictactoe-board.component';
 import { TictactoeboxComponent } from './components/tictactoebox/tictactoebox.component';
+import { TictactoeGamecontrolService } from './services/tictactoe-gamecontrol.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { TictactoeboxComponent } from './components/tictactoebox/tictactoebox.co
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [BackendServiceService],
+  providers: [BackendServiceService, TictactoeGamecontrolService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
