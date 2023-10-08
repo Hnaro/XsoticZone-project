@@ -38,19 +38,17 @@ export class TictactoeGamecontrolService {
     // check if 1 wins means X wins
     // check if 0 wins means O wins
     let currentWinner: any; 
+    let winner: any;
     currentWinner = this.winCombinations.forEach((indexesWinCombination, index) => {
-      let winner: any;
       if (this.tictactoeBoard[indexesWinCombination[0]] == 1 &&
         this.tictactoeBoard[indexesWinCombination[1]] == 1 &&
         this.tictactoeBoard[indexesWinCombination[2]] == 1 ) {
-          winner = "X wins!!"
-          console.log("X wins!!")
+          winner = "X"
       }
       if (this.tictactoeBoard[indexesWinCombination[0]] == 0 &&
         this.tictactoeBoard[indexesWinCombination[1]] == 0 &&
         this.tictactoeBoard[indexesWinCombination[2]] == 0 ) {
-          winner = "O wins!!"
-          console.log("O wins!!");
+          winner = "O"
       }
       if (!winner && index == 7) {
         return undefined;
@@ -59,6 +57,7 @@ export class TictactoeGamecontrolService {
         return winner;
       }
     });
+    return winner;
   }
   private checkColumn(column: number, 
     currentPlayerChar: string, 
@@ -92,4 +91,5 @@ export class TictactoeGamecontrolService {
         break;
     }
   }
+  // if there is a winner fill up the tictactoe board with number 2 value
 }
