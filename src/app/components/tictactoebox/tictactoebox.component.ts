@@ -10,26 +10,29 @@ export class TictactoeboxComponent implements OnInit{
   @Input() colId: any;
   @Input() value: string = "";
 
+  @Output() outputWinner = new EventEmitter();
+
   constructor(private gameService: TictactoeGamecontrolService){
     this.gameService.playerChar = "O";
   }
   ngOnInit(): void {
     // default is X first
+
   }
   onClick() {
-    if (!this.value) {
+    // first check if has value already
+    if (!this.value && this.gameService.checkForWinner() == undefined) {
       if (this.gameService.playerChar == "X") {
-        console.log(this.gameService.playerChar)
         this.gameService.playerMove(this.rowId, this.colId, this.gameService.playerChar);
         this.gameService.playerChar = "O";
-      } else {
-        console.log(this.gameService.playerChar)       
+      } else {      
         this.gameService.playerMove(this.rowId, this.colId, this.gameService.playerChar);
         this.gameService.playerChar = "X"; 
       }
       this.value = this.gameService.playerChar;
-      console.log(this.gameService.tictactoeRecs.values());
+      if (this.gameService.checkForWinner()){
+        console.log("winner from tictactoe box message!! "+this.gameService.checkForWinner()+" wins!!");
+      } 
     }
-    this.gameService.checkForWinner()
   }
 }

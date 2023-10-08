@@ -1,11 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, } from '@angular/core';
 import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecontrol.service';
 
 @Component({
   selector: 'app-tictactoe-board',
   templateUrl: './tictactoe-board.component.html',
-  styleUrls: ['./tictactoe-board.component.css'],
-  providers: [TictactoeGamecontrolService]
+  styleUrls: ['./tictactoe-board.component.css']
 })
 export class TictactoeBoardComponent implements OnInit {
   // I used the empty row array to generate row and column easily
@@ -17,7 +16,7 @@ export class TictactoeBoardComponent implements OnInit {
   @Input() currentPlayerCharacter: string | undefined;
 
   // gameservice for controlling the game mechanics
-  constructor(gameService: TictactoeGamecontrolService) {
+  constructor(private gameService: TictactoeGamecontrolService) {
     gameService = new TictactoeGamecontrolService();
   }
 
@@ -26,4 +25,6 @@ export class TictactoeBoardComponent implements OnInit {
     +this.currentUser+"\n player UUID: "+
     this.currentUserUUID+"\n"+"playerCharacter: "+this.currentPlayerCharacter)
   }
+
+
 }
