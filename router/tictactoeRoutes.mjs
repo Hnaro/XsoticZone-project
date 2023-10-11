@@ -3,9 +3,10 @@ export const router = express.Router();
 import { db } from '../app.mjs';
 import { v4 as uuidv4 } from 'uuid';
 
-// generate uuid 
+// generate uuid
 router.get('/generateUUID', async (req, res) => {
     // setup UUID here for player or match uuid
+    // sends uuid for user to connect to the other user's session
     res.send(uuidv4());
 });
 
@@ -18,7 +19,7 @@ router.post('/matchMove', async (req, res) => {
         move: req.body.move,
         player: req.body.playerName
     }
-    console.log(moveModel) 
+    console.log(moveModel); 
     console.log(req.body);
     const results = await matchCollections.insertOne(moveModel);
     console.log(results);
@@ -36,23 +37,49 @@ router.post('/matchMove', async (req, res) => {
 // creates the session with UUID
 router.post('/createSession', async (req, res) => {
     // generate uuid here when create
+    // generate playerUUID
+    const playerUUID = req.body.hostName+"+"+uuidv4();
+    console.log(playerUUID);
+    // generate sessionUUID
+    const sessionUUID = req.body.hostName+"-sesh+"+uuidv4();
+    console.log(sessionUUID);
+    // get input name eg. (req.body.hostName)
+    const hostname = req.body.hostName;
+    // get collection 
+    const matchCollections = db.collection("sessions");
+    // create model for sessions
+    const session = { 
+        playerID: playerUUID,
+        sessionID: sessionUUID,
+        host: hostname
+    }
+    // save to database
+    const result = await matchCollections.insertOne(session);
+
     // uuid for sessionUUID and s
-    console.log(req.body)
-    if (req.body) {
+    if (req.body.hostName) {
         res.send("created session complete!!");
     } else {
        res.send("session not created!");
     }
 });
 
+
 // create player
 router.post('/joinSession', async (req, res) => {
     // generate current player joining UUID
+    // search data
+    // check collection if sessionUUID is match with req.body.sessionUUIDSeed
+    // get collection
+    const matchCollections = db.collection("sessions");
+    // iterate through collection
+    const result = await matchCollections.findOne({sessionID: req.body.sessionUUIDSeed});
+    // if couldnt find send error message "couldn't find session please provide valid sessionUUID"
     // sessionUUID should recieved here
-    console.log(req.body)
-    if (req.body) {
-        res.send("created player complete!!");
+    console.log(result);
+    if (result) {
+       res.send("joined!!");
     } else {
-       res.send("player not created!");
+       res.send("couldn't find session please provide valid sessionUUID");
     }
 })
