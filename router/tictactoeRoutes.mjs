@@ -3,13 +3,6 @@ export const router = express.Router();
 import { db } from '../app.mjs';
 import { v4 as uuidv4 } from 'uuid';
 
-// generate uuid
-router.get('/generateUUID', async (req, res) => {
-    // setup UUID here for player or match uuid
-    // sends uuid for user to connect to the other user's session
-    res.send(uuidv4());
-});
-
 // watch movement of each player record eit 
 router.post('/matchMove', async (req, res) => {
     // database collections
