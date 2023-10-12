@@ -21,17 +21,14 @@ router.post('/playerMove', async (req, res) => {
     const sessionCollection = db.collection("sessions");
     const sessionUUID = await sessionCollection.findOne({sessionID: req.body.sessionUUID});
     const playerSeshUUID = await matchCollections.findOne({sessionID: req.body.sessionUUID});
-    console.log(sessionUUID);
     // if sessionUUID exists then insert move
     if (sessionUUID) {
         // if playerSeshUUID doesnt exist then insertOne if not then updateOne
         if (!playerSeshUUID) {
             const results = await matchCollections.insertOne(moveModel);
             res.send({ response: "202"});
-            console.log("insert new");
         } else {
             const results = await matchCollections.updateOne({"sessionID": req.body.sessionUUID}, { $set: { "playerMove": req.body.playerMove }});
-            console.log("udpate")
             res.send({ response: "202"});
         }
     } else {
@@ -44,10 +41,8 @@ router.post('/createSession', async (req, res) => {
     // generate uuid here when create
     // generate playerUUID
     const playerUUID = req.body.hostName+"+"+uuidv4();
-    console.log(playerUUID);
     // generate sessionUUID
     const sessionUUID = req.body.hostName+"-sesh+"+uuidv4();
-    console.log(sessionUUID);
     // get input name eg. (req.body.hostName)
     const hostname = req.body.hostName;
     // get collection 
@@ -96,7 +91,5 @@ router.post('/endSesh', async (req, res) => {
     const matchCollection = db.collection("matches");
     const matchRes = await matchCollection.deleteOne(deleteQuery);
     const seshRes = await sessionCollection.deleteOne(deleteQuery);
-    console.log("match result removed: "+matchRes);
-    console.log("session result removed: "+seshRes);
     req.send({ endSeshStatus: "202 ok!!"});
 });
