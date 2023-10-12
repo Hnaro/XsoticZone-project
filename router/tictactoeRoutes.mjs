@@ -2,28 +2,40 @@ import * as express from 'express';
 export const router = express.Router();
 import { db } from '../app.mjs';
 import { v4 as uuidv4 } from 'uuid';
+import { match } from 'assert';
 
 // watch movement of each player record exit 
-router.post('/matchMove', async (req, res) => {
+router.post('/playerMove', async (req, res) => {
     // database collections
     // matches collection
     const matchCollections = db.collection("matches");
+    // create model for matches collections
     const moveModel = { 
-        move: req.body.move,
-        player: req.body.playerName
+        playerID: req.body.playerUUID,
+        sessionID: req.body.sessionUUID,
+        playerMove: req.body.playerMove,
+        matchplayerWinnerID: ""
     }
-    console.log(moveModel); 
-    console.log(req.body);
-    const results = await matchCollections.insertOne(moveModel);
-    console.log(results);
-    //const results = await matchCollections.updateOne({player: "john"},{move:"c2r1"})
-    if (req.body) {
-        res.send({ response: "status ok", 
-        sentName: req.body.playerName, 
-        sentMove: req.body.move 
-    })
+
+    // look for session if session uuid exists
+    const sessionCollection = db.collection("sessions");
+    const sessionUUID = await sessionCollection.findOne({sessionID: req.body.sessionUUID});
+    const playerSeshUUID = await matchCollections.findOne({sessionID: req.body.sessionUUID});
+    console.log(sessionUUID);
+    // if sessionUUID exists then insert move
+    if (sessionUUID) {
+        // if playerSeshUUID doesnt exist then insertOne if not then updateOne
+        if (!playerSeshUUID) {
+            const results = await matchCollections.insertOne(moveModel);
+            res.send({ response: "202"});
+            console.log("insert new");
+        } else {
+            const results = await matchCollections.updateOne({"sessionID": req.body.sessionUUID}, { $set: { "playerMove": req.body.playerMove }});
+            console.log("udpate")
+            res.send({ response: "202"});
+        }
     } else {
-        res.send({response: "status error"});
+        res.send({response: "404"});
     }
 });
 
@@ -39,7 +51,7 @@ router.post('/createSession', async (req, res) => {
     // get input name eg. (req.body.hostName)
     const hostname = req.body.hostName;
     // get collection 
-    const matchCollections = db.collection("sessions");
+    const sessionCollection = db.collection("sessions");
     // create model for sessions
     const session = { 
         playerID: playerUUID,
@@ -47,7 +59,7 @@ router.post('/createSession', async (req, res) => {
         host: hostname
     }
     // save to database
-    const result = await matchCollections.insertOne(session);
+    const result = await sessionCollection.insertOne(session);
 
     // uuid for sessionUUID 
     if (req.body.hostName) {
@@ -76,3 +88,16 @@ router.post('/joinSession', async (req, res) => {
        res.send("couldn't find session please provide valid sessionUUID");
     }
 })
+
+// end session 
+router.post('/endSesh', async (req, res) => {
+    // delete current session ID related
+    const deleteQuery = {"sessionID":req.body.sessionUUIDSeed}
+    const sessionCollection = db.collection("sessions");
+    const matchCollection = db.collection("matches");
+    const matchRes = await matchCollection.deleteOne(deleteQuery);
+    const seshRes = await sessionCollection.deleteOne(deleteQuery);
+    console.log("match result removed: "+matchRes);
+    console.log("session result removed: "+seshRes);
+    req.send({ endSeshStatus: "202 ok!!"});
+});
