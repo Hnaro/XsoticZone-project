@@ -4,7 +4,7 @@ import { db } from '../app.mjs';
 import { v4 as uuidv4 } from 'uuid';
 import { match } from 'assert';
 
-// watch movement of each player record exit 
+// watch movement of each player
 router.post('/playerMove', async (req, res) => {
     // database collections
     // matches collection
@@ -68,7 +68,6 @@ router.post('/createSession', async (req, res) => {
        res.send("session not created!");
     }
 });
-
 
 // create player
 router.post('/joinSession', async (req, res) => {
