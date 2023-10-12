@@ -7,7 +7,6 @@ import { app } from './server.mjs';
 import { default as cors } from 'cors';
 import { dbclient, rundb } from './mongoDBclient.mjs';
 
-
 runApp();
 rundb();
 export const db = dbclient.db("tictactoeDB");

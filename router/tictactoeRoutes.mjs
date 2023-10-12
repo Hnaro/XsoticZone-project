@@ -3,7 +3,7 @@ export const router = express.Router();
 import { db } from '../app.mjs';
 import { v4 as uuidv4 } from 'uuid';
 
-// watch movement of each player record eit 
+// watch movement of each player record exit 
 router.post('/matchMove', async (req, res) => {
     // database collections
     // matches collection
@@ -49,7 +49,7 @@ router.post('/createSession', async (req, res) => {
     // save to database
     const result = await matchCollections.insertOne(session);
 
-    // uuid for sessionUUID and s
+    // uuid for sessionUUID 
     if (req.body.hostName) {
         res.send("created session complete!!");
     } else {
@@ -69,7 +69,7 @@ router.post('/joinSession', async (req, res) => {
     const result = await matchCollections.findOne({sessionID: req.body.sessionUUIDSeed});
     // if couldnt find send error message "couldn't find session please provide valid sessionUUID"
     // sessionUUID should recieved here
-    console.log(result);
+    console.log(result.sessionID);
     if (result) {
        res.send("joined!!");
     } else {
