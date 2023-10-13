@@ -13,8 +13,7 @@ router.post('/playerMove', async (req, res) => {
     const moveModel = { 
         playerID: req.body.playerUUID,
         sessionID: req.body.sessionUUID,
-        playerMove: req.body.playerMove,
-        matchplayerWinnerID: ""
+        playerMove: req.body.playerMove
     }
 
     // look for session if session uuid exists
@@ -40,7 +39,7 @@ router.post('/playerMove', async (req, res) => {
 router.post('/createSession', async (req, res) => {
     // generate uuid here when create
     // generate playerUUID
-    const playerUUID = req.body.hostName+"+"+uuidv4();
+    const hostUUID = req.body.hostName+"+"+uuidv4();
     // generate sessionUUID
     const sessionUUID = req.body.hostName+"-sesh+"+uuidv4();
     // get input name eg. (req.body.hostName)
@@ -49,9 +48,12 @@ router.post('/createSession', async (req, res) => {
     const sessionCollection = db.collection("sessions");
     // create model for sessions
     const session = { 
-        playerID: playerUUID,
+        hostID: hostUUID,
         sessionID: sessionUUID,
-        host: hostname
+        hostName: hostname,
+        challengerName: "",
+        challengerID: "",
+        winnerID: ""
     }
     // save to database
     const result = await sessionCollection.insertOne(session);
@@ -67,6 +69,14 @@ router.post('/createSession', async (req, res) => {
 // create player
 router.post('/joinSession', async (req, res) => {
     // generate current player joining UUID
+    const challengerName = req.body.challengerName;
+    const challengerUUID = challengerName+"+"+uuidv4();
+    // get session collection
+    const sessionCollection = db.collection("sessions");
+    sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed}, {$set: {
+        "challengerName": challengerName,
+        "challengerID": challengerUUID
+    }});
     // search data
     // check collection if sessionUUID is match with req.body.sessionUUIDSeed
     // get collection
@@ -82,6 +92,12 @@ router.post('/joinSession', async (req, res) => {
        res.send("couldn't find session please provide valid sessionUUID");
     }
 })
+
+// check who wins?
+router.post('/winner', async (req, res) => {
+    // if there is a winner put it in the match board
+    
+});
 
 // end session 
 router.post('/endSesh', async (req, res) => {
