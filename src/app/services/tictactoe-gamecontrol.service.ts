@@ -6,6 +6,10 @@ import { Injectable } from '@angular/core';
 export class TictactoeGamecontrolService {
 
   // track the data here
+  // use this to track the current player and the enemy
+  currentPlayerBoardData: Object[];
+  currentPlayerUUID: string = "currentHost";
+  challengerPlayerUUID: string = "challenger";  
   // if data is 1 then it is X
   // if data is 0 then it is 0
   tictactoeBoard: number[];
@@ -22,6 +26,7 @@ export class TictactoeGamecontrolService {
     currentPlayerChar: any;
   constructor() {
     this.tictactoeBoard = new Array(8).fill(undefined);
+    this.currentPlayerBoardData = new Array(8).fill(undefined);
   }
   get tictactoeRecs() {
     return this.tictactoeBoard;
@@ -31,6 +36,14 @@ export class TictactoeGamecontrolService {
   }
   get playerChar() {
     return this.currentPlayerChar;
+  }
+  // check who will take first turn
+  whoTakesFirstTurn() {
+    if (Math.round(Math.random()) === 0) {
+      return this.currentPlayerUUID;
+    } else {
+      return this.challengerPlayerUUID;
+    }
   }
   // determines the winner 
   checkForWinner() {
@@ -91,5 +104,4 @@ export class TictactoeGamecontrolService {
         break;
     }
   }
-  // if there is a winner fill up the tictactoe board with number 2 value
 }
