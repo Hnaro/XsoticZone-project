@@ -8,14 +8,16 @@ export class TictactoeGamecontrolService {
   // track the data here
   // use this to track the current player and the enemy
   currentPlayerBoardData: Object[];
-  currentPlayerUUID: string = "currentHost";
-  challengerPlayerUUID: string = "challenger";  
+  currentPlayerUUID: string = "";
+  challengerPlayerUUID: string = "";
+  currentPlayerChar: any;
+  winnerUUID: string | undefined;
   // if data is 1 then it is X
   // if data is 0 then it is 0
   tictactoeBoard: number[];
   // win combinations
   winCombinations: Array<number>[] = [
-    [0,1,2], 
+    [0,1,2],
     [3,4,5],
     [6,7,8],
     [0,3,6],
@@ -23,19 +25,34 @@ export class TictactoeGamecontrolService {
     [2,5,8],
     [0,4,8],
     [2,4,6]];
-    currentPlayerChar: any;
   constructor() {
     this.tictactoeBoard = new Array(8).fill(undefined);
     this.currentPlayerBoardData = new Array(8).fill(undefined);
   }
+  // set and get for winner UUID
   get tictactoeRecs() {
     return this.tictactoeBoard;
   }
-  set playerChar(char: string) {
+  // if X or O
+  set currplayerChar(char: string) {
     this.currentPlayerChar = char;
   }
-  get playerChar() {
+  get currplayerChar() {
     return this.currentPlayerChar;
+  }
+  // get and set for curr player UUID
+  set currPlayerUUID(playerID: string) {
+    this.currentPlayerUUID = playerID;
+  }
+  get currPlayerUUID() {
+    return this.currentPlayerUUID;
+  }
+  // get and set for challenger playerUUID
+  set opponentPlayerUUID(challenger: string) {
+    this.challengerPlayerUUID = challenger;
+  }
+  get opponentPlayerUUID() {
+    return this.challengerPlayerUUID;
   }
   // check who will take first turn
   whoTakesFirstTurn() {
@@ -45,12 +62,12 @@ export class TictactoeGamecontrolService {
       return this.challengerPlayerUUID;
     }
   }
-  // determines the winner 
+  // determines the winner
   checkForWinner() {
     // check each possible combination of who wins
     // check if 1 wins means X wins
     // check if 0 wins means O wins
-    let currentWinner: any; 
+    let currentWinner: any;
     let winner: any;
     currentWinner = this.winCombinations.forEach((indexesWinCombination, index) => {
       if (this.tictactoeBoard[indexesWinCombination[0]] == 1 &&
@@ -72,10 +89,10 @@ export class TictactoeGamecontrolService {
     });
     return winner;
   }
-  private checkColumn(column: number, 
-    currentPlayerChar: string, 
+  private checkColumn(column: number,
+    currentPlayerChar: string,
     indexes: any[]) {
-    // check which column 
+    // check which column
     for(let i = 0; i < 3; i++) {
       if (column == (i+1)) {
         if (currentPlayerChar == "X") {
@@ -83,7 +100,7 @@ export class TictactoeGamecontrolService {
         } else {
           this.tictactoeBoard[indexes[i]] = 1;
         }
-      } 
+      }
     }
   }
   // track player move

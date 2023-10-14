@@ -9,7 +9,7 @@ import { BackendServiceService } from './services/backend-service.service';
 })
 export class AppComponent implements OnInit{
   title = 'TicTacToe';
-  
+
   // current player session
   currentUser: string = "John";
   currentUserUUID: string = "testUUID";
@@ -22,7 +22,9 @@ export class AppComponent implements OnInit{
   constructor(private backendService: BackendServiceService, private gameService: TictactoeGamecontrolService) {
   }
   ngOnInit(): void {
-    console.log(this.gameService.whoTakesFirstTurn());
+
+    // set the in game info about the session here!!
+
     this.backendService.checkBackend().then(obj => {
       const subsObj = obj.subscribe(value => {
         let myval: any = {
@@ -37,14 +39,15 @@ export class AppComponent implements OnInit{
       });
     }, )
     let x = 0;
-/*     this.i = setInterval(() => {
-        console.log(this.gameService.checkForWinner());
+     this.i = setInterval(() => {
+        //console.log(this.gameService.checkForWinner());
          if (this.gameService.checkForWinner()) {
+          this.anyWinner = this.gameService.checkForWinner();
           clearInterval(this.i);
-        } 
-    }, 3000); */
+        }
+    }, 200);
   }
-/* 
+/*
   ngDoCheck(): void {
     console.log("new change: "+this.anyWinner);
   } */
