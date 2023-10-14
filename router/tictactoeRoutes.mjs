@@ -11,8 +11,11 @@ router.post('/playerMove', async (req, res) => {
     const matchCollections = db.collection("matches");
     // create model for matches collections
     const moveModel = { 
+        // this checks for whoever is player id moved
         playerID: req.body.playerUUID,
+        // current session
         sessionID: req.body.sessionUUID,
+        // current player move
         playerMove: req.body.playerMove
     }
 
