@@ -94,7 +94,7 @@ router.post('/joinSession', async (req, res) => {
     } else {
        res.send("couldn't find session please provide valid sessionUUID");
     }
-})
+});
 
 // check who wins?
 router.post('/winner', async (req, res) => {
