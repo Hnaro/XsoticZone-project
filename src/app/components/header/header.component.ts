@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-
+  sessionActive: boolean = false;
+  // check here if gamecontrolService has Session UUID
+  // then set session active to true if session is created
 }
