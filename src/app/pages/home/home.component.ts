@@ -10,14 +10,7 @@ import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecont
 export class HomeComponent {
     // set the in game info about the session here!!
     title = 'TicTacToe';
-
-    // current player session
-    currentUser: string = "John";
-    currentUserUUID: string = "testUUID";
-    currentPlayerCharacter = "X";
-
     i: any;
-
     @Input() anyWinner: any;
 
     constructor(private backendService: BackendServiceService, private gameService: TictactoeGamecontrolService) {

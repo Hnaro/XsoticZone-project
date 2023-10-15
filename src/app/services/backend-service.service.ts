@@ -13,5 +13,9 @@ export class BackendServiceService {
   async checkBackend() {
     return await this.http.get(this.defaultUrl);
   }
-  // player move
+  // create session
+  async createSesh(hostname: string) {
+    return await this.http.post(
+      this.defaultUrl+"t/createSession", {hostName: hostname})
+  }
 }

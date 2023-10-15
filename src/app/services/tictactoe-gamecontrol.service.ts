@@ -7,8 +7,10 @@ export class TictactoeGamecontrolService {
 
   // track the data here
   // use this to track the current player and the enemy
-  currentPlayerBoardData: Object[];
+  currentPlayerBoardData: any[];
   currentPlayerUUID: string = "";
+  hostName: string = "";
+  opponentName: string = "";
   challengerPlayerUUID: string = "";
   currentPlayerChar: any;
   winnerUUID: string | undefined;
