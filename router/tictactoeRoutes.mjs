@@ -2,7 +2,6 @@ import * as express from 'express';
 export const router = express.Router();
 import { db } from '../app.mjs';
 import { v4 as uuidv4 } from 'uuid';
-import { match } from 'assert';
 
 // watch movement of each player
 router.post('/playerMove', async (req, res) => {
@@ -58,18 +57,17 @@ router.post('/createSession', async (req, res) => {
         challengerID: "",
         winnerID: ""
     }
-    // save to database
-    const result = await sessionCollection.insertOne(session);
-
     // uuid for sessionUUID 
     if (req.body.hostName) {
-        res.send("created session complete!!");
+        // save to database
+        const result = await sessionCollection.insertOne(session);
+        res.send({ data: session });
     } else {
-       res.send("session not created!");
+       res.send({msg:"session not created!!"});
     }
 });
 
-// create player
+// join player
 router.post('/joinSession', async (req, res) => {
     // generate current player joining UUID
     const challengerName = req.body.challengerName;
