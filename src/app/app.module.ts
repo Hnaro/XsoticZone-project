@@ -13,6 +13,8 @@ import { CreateSessionCompComponent } from './components/create-session-comp/cre
 import { JoinSessionCompComponent } from './components/join-session-comp/join-session-comp.component';
 import { LobbyComponent } from './pages/lobby/lobby.component';
 import { AboutComponent } from './pages/about/about.component';
+import { FormsModule } from '@angular/forms';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
@@ -22,13 +24,16 @@ import { AboutComponent } from './pages/about/about.component';
     TictactoeboxComponent,
     CreateSessionCompComponent,
     JoinSessionCompComponent,
+    HomeComponent,
     LobbyComponent,
-    AboutComponent
+    AboutComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [BackendServiceService, TictactoeGamecontrolService],
   bootstrap: [AppComponent]
