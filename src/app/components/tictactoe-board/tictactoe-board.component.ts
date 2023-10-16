@@ -21,9 +21,9 @@ export class TictactoeBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("current player info: \n player name: "
+    /* console.log("current player info: \n player name: "
     +this.currentUser+"\n player UUID: "+
-    this.currentUserUUID+"\n"+"playerCharacter: "+this.currentPlayerCharacter)
+    this.currentUserUUID+"\n"+"playerCharacter: "+this.currentPlayerCharacter) */
   }
 
 

@@ -13,7 +13,7 @@ export class TictactoeboxComponent implements OnInit{
   @Output() outputWinner = new EventEmitter();
 
   constructor(private gameService: TictactoeGamecontrolService){
-    this.gameService.currentPlayerChar = "O";
+    this.gameService.currplayerChar = "O";
   }
   ngOnInit(): void {
     // default is X first
@@ -22,14 +22,14 @@ export class TictactoeboxComponent implements OnInit{
   onClick() {
     // first check if has value already
     if (!this.value && this.gameService.checkForWinner() == undefined) {
-      if (this.gameService.currentPlayerChar == "X") {
-        this.gameService.playerMove(this.rowId, this.colId, this.gameService.currentPlayerChar);
-        this.gameService.currentPlayerChar = "O";
+      if (this.gameService.currplayerChar == "X") {
+        this.gameService.playerMove(this.rowId, this.colId, this.gameService.currplayerChar);
+        this.gameService.currplayerChar = "O";
       } else {
-        this.gameService.playerMove(this.rowId, this.colId, this.gameService.currentPlayerChar);
-        this.gameService.currentPlayerChar = "X";
+        this.gameService.playerMove(this.rowId, this.colId, this.gameService.currplayerChar);
+        this.gameService.currplayerChar = "X";
       }
-      this.value = this.gameService.currentPlayerChar;
+      this.value = this.gameService.currplayerChar;
       if (this.gameService.checkForWinner()){
         console.log("winner from tictactoe box message!! "+this.gameService.checkForWinner()+" wins!!");
       }

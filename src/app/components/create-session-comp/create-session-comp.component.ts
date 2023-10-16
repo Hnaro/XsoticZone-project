@@ -11,6 +11,8 @@ import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecont
 export class CreateSessionCompComponent {
   // current user host name
   hostname: string = "";
+  isSeshActive: boolean = false;
+  seshID: string = "";
 
   constructor(private router: Router,
     private backendService: BackendServiceService,
@@ -20,9 +22,17 @@ export class CreateSessionCompComponent {
     this.backendService.createSesh(this.hostname)
     .then(body => {
       let subs = body.subscribe(value => {
-        console.log(value);
+        let obj: any;
+        obj = value
+        // store all data to gamecontrol service
+ /*        this.gameControlService.currPlayerUUID = obj.hostID
+        this.gameControlService.hostname = value. */
+        if (localStorage.getItem("seshID")) {
+          localStorage.setItem("seshID",obj.res.sessionID);
+        }
+        console.log(obj);
         subs.unsubscribe();
-        if (value) {
+        if (value && obj.isCreated) {
           this.router.navigate(['/lobby'])
         } else {
           console.log("no data")
@@ -35,6 +45,5 @@ export class CreateSessionCompComponent {
     // recieve data and save to gamecontroservice
     // after recieving data from subscribe
     // get each data from it to gamecontrolservice
-
   }
 }

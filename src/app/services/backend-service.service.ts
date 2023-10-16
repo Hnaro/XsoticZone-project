@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BackendServiceService {
 
-  defaultUrl: string = "http://10.0.0.51:3000/";
+  defaultUrl: string = "http://10.0.0.51:4000/";
   constructor(private http: HttpClient) {}
 
   // check backend connection
@@ -14,8 +14,17 @@ export class BackendServiceService {
     return await this.http.get(this.defaultUrl);
   }
   // create session
-  async createSesh(hostname: string) {
+  async createSesh(hostname: any) {
     return await this.http.post(
-      this.defaultUrl+"t/createSession", {hostName: hostname})
+      this.defaultUrl+"t/createSession",
+      {hostName: hostname});
+  }
+  // join session
+  async joinSesh(sessionID: any, name: any){
+    return await this.http.post(
+      this.defaultUrl+"t/joinSession",
+      {sessionUUIDSeed: sessionID,
+       opponentName: name}
+    );
   }
 }

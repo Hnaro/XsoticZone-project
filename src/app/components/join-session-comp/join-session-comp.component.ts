@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { BackendServiceService } from 'src/app/services/backend-service.service';
+import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecontrol.service';
 
 @Component({
   selector: 'app-join-session-comp',
@@ -7,4 +9,20 @@ import { Component } from '@angular/core';
 })
 export class JoinSessionCompComponent {
 
+  username: string | undefined;
+  sessionIDSeed: string | undefined;
+  // on join session
+  constructor(private backendService: BackendServiceService,
+    private gameControlService: TictactoeGamecontrolService) {}
+  onJoin() {
+    // send join info's
+    this.backendService.joinSesh(this.sessionIDSeed,
+      this.username)
+      .then(data => {
+        let subs = data.subscribe(value => {
+          console.log(value);
+
+        })
+      })
+  }
 }

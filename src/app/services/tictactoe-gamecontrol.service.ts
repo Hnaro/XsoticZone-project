@@ -7,16 +7,16 @@ export class TictactoeGamecontrolService {
 
   // track the data here
   // use this to track the current player and the enemy
-  currentPlayerBoardData: any[];
-  currentPlayerUUID: string = "";
-  hostName: string = "";
-  opponentName: string = "";
-  challengerPlayerUUID: string = "";
-  currentPlayerChar: any;
-  winnerUUID: string | undefined;
+  private currentPlayerBoardData: any[];
+  private currentPlayerUUID: string = "";
+  private hostName: string = "";
+  private opponentName: string = "";
+  private opponentUUID: string = "";
+  private currentPlayerChar: any;
+  private winnerUUID: string | undefined;
   // if data is 1 then it is X
   // if data is 0 then it is 0
-  tictactoeBoard: number[];
+  private tictactoeBoard: number[];
   // win combinations
   winCombinations: Array<number>[] = [
     [0,1,2],
@@ -31,9 +31,26 @@ export class TictactoeGamecontrolService {
     this.tictactoeBoard = new Array(8).fill(undefined);
     this.currentPlayerBoardData = new Array(8).fill(undefined);
   }
-  // set and get for winner UUID
-  get tictactoeRecs() {
+  // current player hostname
+  set hostname(name: string) {
+    this.hostName = name;
+  }
+  get hostname() {
+    return this.hostName;
+  }
+  // opponent name
+  set opponentname(name: string) {
+    this.opponentName = name;
+  }
+  get opponentname() {
+    return this.opponentName;
+  }
+  // set and get for game record UUID
+  get tictactoeRec() {
     return this.tictactoeBoard;
+  }
+  set tictactoeRec(rec: number[]) {
+    this.tictactoeBoard = rec;
   }
   // if X or O
   set currplayerChar(char: string) {
@@ -50,18 +67,18 @@ export class TictactoeGamecontrolService {
     return this.currentPlayerUUID;
   }
   // get and set for challenger playerUUID
-  set opponentPlayerUUID(challenger: string) {
-    this.challengerPlayerUUID = challenger;
+  set opponentPlayerUUID(opponent: string) {
+    this.opponentUUID = opponent;
   }
   get opponentPlayerUUID() {
-    return this.challengerPlayerUUID;
+    return this.opponentUUID;
   }
   // check who will take first turn
   whoTakesFirstTurn() {
     if (Math.round(Math.random()) === 0) {
       return this.currentPlayerUUID;
     } else {
-      return this.challengerPlayerUUID;
+      return this.opponentPlayerUUID;
     }
   }
   // determines the winner

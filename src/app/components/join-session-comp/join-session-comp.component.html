@@ -1,5 +1,13 @@
 <div id="joinSesh-container">
   <h1>Join Session</h1>
-  <input id="challengerName" name="challengerName" type="text" placeholder="Join a session: (Enter session ID here!!)">
-  <button>Join</button>
+  <input id="challengerName"
+  name="challengerName"
+  type="text"
+  placeholder="Enter Session ID">
+  <input [(ngModel)]="username"
+  id="username"
+  name="username"
+  type="text"
+  placeholder="Enter as ex:'MyName'">
+  <button (click)="onJoin()">Join</button>
 </div>

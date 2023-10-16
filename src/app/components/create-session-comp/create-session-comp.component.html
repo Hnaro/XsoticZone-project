@@ -1,7 +1,10 @@
 <div id="createSesh-container">
   <h1>Create Session</h1>
   <div>
-    <input [(ngModel)]="hostname" type="text" id="hostName" name="hostName" placeholder="Hostname">
+    <input [(ngModel)]="hostname" type="text" id="hostName" name="hostName" placeholder="Enter Host Name">
     <button (click)="onCreate()">Create</button>
+  </div>
+  <div *ngIf="isSeshActive">
+    <h4>{{seshID}}</h4>
   </div>
 </div>
