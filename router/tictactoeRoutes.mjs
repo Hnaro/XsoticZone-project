@@ -20,16 +20,22 @@ router.post('/playerMove', async (req, res) => {
 
     // look for session if session uuid exists
     const sessionCollection = db.collection("sessions");
-    const sessionUUID = await sessionCollection.findOne({sessionID: req.body.sessionUUID});
-    const playerSeshUUID = await matchCollections.findOne({sessionID: req.body.sessionUUID});
+    const sessionUUID = await sessionCollection
+    .findOne({sessionID: req.body.sessionUUID});
+    const playerSeshUUID = await matchCollections
+    .findOne({sessionID: req.body.sessionUUID});
     // if sessionUUID exists then insert move
     if (sessionUUID) {
-        // if playerSeshUUID doesnt exist then insertOne if not then updateOne
+        // if playerSeshUUID doesnt exist then insertOne 
+        // if not then updateOne
         if (!playerSeshUUID) {
-            const results = await matchCollections.insertOne(moveModel);
+            const results = await matchCollections
+            .insertOne(moveModel);
             res.send({ response: "202"});
         } else {
-            const results = await matchCollections.updateOne({"sessionID": req.body.sessionUUID}, { $set: { "playerMove": req.body.playerMove }});
+            const results = await matchCollections
+            .updateOne({"sessionID": req.body.sessionUUID}, 
+            { $set: { "playerMove": req.body.playerMove }});
             res.send({ response: "202"});
         }
     } else {
@@ -53,51 +59,53 @@ router.post('/createSession', async (req, res) => {
         hostID: hostUUID,
         sessionID: sessionUUID,
         hostName: hostname,
-        challengerName: "",
-        challengerID: "",
+        opponentName: "",
+        opponentID: "",
         winnerID: ""
     }
+    const result = await sessionCollection.insertOne(session);
     // uuid for sessionUUID 
-    if (req.body.hostName) {
+    if (result.acknowledged && req.body.hostName) {
         // save to database
-        const result = await sessionCollection.insertOne(session);
-        res.send({ data: session });
+        res.send({res: session, isCreated: true});
     } else {
-       res.send({msg:"session not created!!"});
+       res.send({isCreated: false});
     }
 });
 
-// join player
+// join session
 router.post('/joinSession', async (req, res) => {
     // generate current player joining UUID
-    const challengerName = req.body.challengerName;
-    const challengerUUID = challengerName+"+"+uuidv4();
+    const opponentName = req.body.playerName;
+    const opponentUUID = opponentName+"+"+uuidv4();
     // get session collection
     const sessionCollection = db.collection("sessions");
-    sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed}, {$set: {
-        "challengerName": challengerName,
-        "challengerID": challengerUUID
+    sessionCollection
+    .updateOne({"sessionID": req.body.sessionUUIDSeed}, 
+    {$set: {
+        "opponentName": opponentName,
+        "opponentID": opponentUUID
     }});
     // search data
     // check collection if sessionUUID is match with req.body.sessionUUIDSeed
     // get collection
     const matchCollections = db.collection("sessions");
     // iterate through collection
-    const result = await matchCollections.findOne({sessionID: req.body.sessionUUIDSeed});
+    const result = await matchCollections
+    .findOne({sessionID: req.body.sessionUUIDSeed});
     // if couldnt find send error message "couldn't find session please provide valid sessionUUID"
     // sessionUUID should recieved here
-    console.log(result.sessionID);
     if (result) {
-       res.send("joined!!");
+       res.send({ data: result });
     } else {
-       res.send("couldn't find session please provide valid sessionUUID");
+       res.send(
+        "couldn't find session please provide valid sessionUUID");
     }
 });
 
 // check who wins?
-router.post('/winner', async (req, res) => {
+router.get('/winner', async (req, res) => {
     // if there is a winner put it in the match board
-    
 });
 
 // end session 
