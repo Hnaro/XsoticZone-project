@@ -17,7 +17,6 @@ router.post('/playerMove', async (req, res) => {
         // current player move
         playerMove: req.body.playerMove
     }
-
     // look for session if session uuid exists
     const sessionCollection = db.collection("sessions");
     const sessionUUID = await sessionCollection
@@ -45,6 +44,7 @@ router.post('/playerMove', async (req, res) => {
 
 // creates the session with UUID
 router.post('/createSession', async (req, res) => {
+    const sessionCollection = db.collection("sessions");
     // generate uuid here when create
     // generate playerUUID
     const hostUUID = req.body.hostName+"+"+uuidv4();
@@ -53,7 +53,6 @@ router.post('/createSession', async (req, res) => {
     // get input name eg. (req.body.hostName)
     const hostname = req.body.hostName;
     // get collection 
-    const sessionCollection = db.collection("sessions");
     // create model for sessions
     const session = { 
         hostID: hostUUID,
@@ -75,11 +74,19 @@ router.post('/createSession', async (req, res) => {
 
 // join session
 router.post('/joinSession', async (req, res) => {
-    // generate current player joining UUID
-    const opponentName = req.body.playerName;
-    const opponentUUID = opponentName+"+"+uuidv4();
-    // get session collection
     const sessionCollection = db.collection("sessions");
+    let opponentName;
+    let opponentUUID;
+    let noNameMsg;
+    // generate current player joining UUID
+    let name = sessionCollection.find({opponentName: req.body.opponentName});
+    if (name) {
+        opponentName = req.body.opponentName;
+        opponentUUID = opponentName+"+"+uuidv4();
+    } else {
+        noNameMsg = "name already exist!"
+    }
+    // update session collection
     sessionCollection
     .updateOne({"sessionID": req.body.sessionUUIDSeed}, 
     {$set: {
@@ -89,17 +96,16 @@ router.post('/joinSession', async (req, res) => {
     // search data
     // check collection if sessionUUID is match with req.body.sessionUUIDSeed
     // get collection
-    const matchCollections = db.collection("sessions");
     // iterate through collection
-    const result = await matchCollections
+    const result = await sessionCollection
     .findOne({sessionID: req.body.sessionUUIDSeed});
     // if couldnt find send error message "couldn't find session please provide valid sessionUUID"
     // sessionUUID should recieved here
     if (result) {
        res.send({ data: result });
     } else {
-       res.send(
-        "couldn't find session please provide valid sessionUUID");
+        let message = name ? "couldn't find session please provide valid sessionID" : noNameMsg;
+       res.send({ msg: message});
     }
 });
 
