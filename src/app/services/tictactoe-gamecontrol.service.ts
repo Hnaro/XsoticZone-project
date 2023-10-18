@@ -10,6 +10,7 @@ export class TictactoeGamecontrolService {
   private currentPlayerBoardData: any[];
   private currentPlayerUUID: string = "";
   private hostName: string = "";
+  private sessionUUID: string = "";
   private opponentName: string = "";
   private opponentUUID: string = "";
   private currentPlayerChar: any;
@@ -30,6 +31,24 @@ export class TictactoeGamecontrolService {
   constructor() {
     this.tictactoeBoard = new Array(8).fill(undefined);
     this.currentPlayerBoardData = new Array(8).fill(undefined);
+  }
+  setupCurrentPlayerData(hostID: string,
+    hostName: string,
+    sessionID: string,
+    opponentName: string,
+    oppponentID: string) {
+    this.currentPlayerUUID = hostID;
+    this.hostName = hostName;
+    this.sessionUUID = sessionID;
+    this.opponentName = opponentName;
+    this.opponentUUID = oppponentID;
+  }
+  // session id get and set
+  set sessionID(sessionID: string) {
+    this.sessionUUID = sessionID;
+  }
+  get sessionID(){
+    return this.sessionUUID;
   }
   // current player hostname
   set hostname(name: string) {

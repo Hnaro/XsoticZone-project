@@ -24,7 +24,7 @@ export class BackendServiceService {
     return await this.http.post(
       this.defaultUrl+"t/joinSession",
       {sessionUUIDSeed: sessionID,
-       opponentName: name}
+        opponentName: name}
     );
   }
 }

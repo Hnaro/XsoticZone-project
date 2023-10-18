@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, DoCheck } from '@angular/core';
+import { Component } from '@angular/core';
 import { TictactoeGamecontrolService } from './services/tictactoe-gamecontrol.service';
 import { BackendServiceService } from './services/backend-service.service';
 
@@ -9,4 +9,7 @@ import { BackendServiceService } from './services/backend-service.service';
 })
 export class AppComponent{
 
+  constructor(){
+    localStorage.removeItem("seshID");
+  }
 }

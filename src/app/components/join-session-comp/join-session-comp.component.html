@@ -1,9 +1,11 @@
-<div id="joinSesh-container">
+<div *ngIf="isSessionActive" id="joinSesh-container">
   <h1>Join Session</h1>
-  <input id="challengerName"
+  <input [(ngModel)]="sessionIDSeed"
+  id="challengerName"
   name="challengerName"
   type="text"
-  placeholder="Enter Session ID">
+  placeholder="Enter Session ID"><br>
+  <span style="color: red" >{{errMessage}}</span><br>
   <input [(ngModel)]="username"
   id="username"
   name="username"
