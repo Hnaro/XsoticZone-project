@@ -2,7 +2,7 @@
     <nav>
         <ul>
             <li id="logo-container">Logo here!!</li>
-            <li><a [routerLink]="['']">Home</a></li>
+            <li><a (click)="refresh()" [routerLink]="['']">Home</a></li>
             <li *ngIf="sessionActive"><a [routerLink]="['lobby']">Lobby</a></li>
             <li>
                 <div id="links-icon-container">

@@ -1,4 +1,4 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, Output, EventEmitter} from '@angular/core';
 import { Router } from '@angular/router';
 import { BackendServiceService } from 'src/app/services/backend-service.service';
 import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecontrol.service';
@@ -14,7 +14,6 @@ export class CreateSessionCompComponent implements DoCheck {
   isSeshNotActive: boolean = true;
   seshID: string | null = "";
   errMessage: string | undefined;
-
   constructor(private router: Router,
     private backendService: BackendServiceService,
     private gameControlService: TictactoeGamecontrolService){}

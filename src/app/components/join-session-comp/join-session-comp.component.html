@@ -1,12 +1,14 @@
 <div *ngIf="isSessionActive" id="joinSesh-container">
   <h1>Join Session</h1>
-  <input [(ngModel)]="sessionIDSeed"
+  <span style="color: red" *ngIf="serverErrMsg" >{{serverErrMsg}}</span><br>
+  <input (focus)="onFocusChallengeInput()"
+  [(ngModel)]="sessionIDSeed"
   id="challengerName"
   name="challengerName"
   type="text"
   placeholder="Enter Session ID"><br>
-  <span style="color: red" >{{errMessage}}</span><br>
-  <input [(ngModel)]="username"
+  <input (focus)="onFocusUserInput()"
+  [(ngModel)]="username"
   id="username"
   name="username"
   type="text"

@@ -12,13 +12,13 @@ export class JoinSessionCompComponent implements DoCheck{
   sessionIDSeed: string | undefined;
   isSessionActive: boolean = true;
   errMessage: string | undefined;
+  serverErrMsg: string | undefined
   // on join session
   constructor(private backendService: BackendServiceService,
     private gameControlService: TictactoeGamecontrolService) {}
   onJoin() {
     // send join info's
-    console.log(this.username);
-    if (this.username) {
+    if (this.username && this.sessionIDSeed) {
       this.backendService.joinSesh(this.sessionIDSeed,
         this.username)
         .then(data => {
@@ -26,22 +26,34 @@ export class JoinSessionCompComponent implements DoCheck{
             let obj: any;
             obj = value;
             if (obj.msg) {
-              console.log(obj)
+              this.serverErrMsg = obj.msg;
             } else {
+              console.log(obj)
               localStorage.setItem("seshID", obj.data.sessionID);
+              subs.unsubscribe();
             }
           })
         }).catch(err => {
           console.log(err);
         })
     } else {
-      this.errMessage = "please enter your name!!"
+      this.serverErrMsg = "please make sure that name and Session id is in the field!!"
     }
 
   }
   ngDoCheck(): void {
     if (localStorage.getItem("seshID")) {
       this.isSessionActive = false;
+    }
+  }
+  onFocusChallengeInput() {
+    if (!this.username) {
+      this.serverErrMsg = "";
+    }
+  }
+  onFocusUserInput() {
+    if (!this.sessionIDSeed) {
+      this.serverErrMsg = "";
     }
   }
 }
