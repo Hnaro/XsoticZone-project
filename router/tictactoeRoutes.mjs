@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 router.post('/playerMove', async (req, res) => {
     // database collections
     // matches collection
-    const matchCollections = db.collection("matches");
+    const matchCollections = await db.collection("matches");
     // create model for matches collections
     const moveModel = { 
         // this checks for whoever is player id moved
@@ -18,7 +18,7 @@ router.post('/playerMove', async (req, res) => {
         playerMove: req.body.playerMove
     }
     // look for session if session uuid exists
-    const sessionCollection = db.collection("sessions");
+    const sessionCollection = await db.collection("sessions");
     const sessionUUID = await sessionCollection
     .findOne({sessionID: req.body.sessionUUID});
     const playerSeshUUID = await matchCollections
@@ -44,7 +44,7 @@ router.post('/playerMove', async (req, res) => {
 
 // creates the session with UUID
 router.post('/createSession', async (req, res) => {
-    const sessionCollection = db.collection("sessions");
+    const sessionCollection = await db.collection("sessions");
     // generate uuid here when create
     // generate playerUUID
     const hostUUID = req.body.hostName+"+"+uuidv4();
@@ -72,14 +72,26 @@ router.post('/createSession', async (req, res) => {
     }
 });
 
+router.post('/findSession', async (req, res) => {
+    // first get collection
+    const sessionCollection = await db.collection("sessions");
+    // next find collection using session collection 
+    let result = await sessionCollection.findOne({sessionID: req.body.sessionUUIDSeed});
+    if (result) {
+        res.send({data: result});
+    } else {
+        res.send({msg: "Could not found Session ID!", delLocalStorage: true});
+    }
+});
+
 // join session
 router.post('/joinSession', async (req, res) => {
-    const sessionCollection = db.collection("sessions");
+    const sessionCollection = await db.collection("sessions");
     let opponentName;
     let opponentUUID;
     let noNameMsg;
     // generate current player joining UUID
-    let name = sessionCollection.find({opponentName: req.body.opponentName});
+    let name = await sessionCollection.find({opponentName: req.body.opponentName});
     if (name) {
         opponentName = req.body.opponentName;
         opponentUUID = opponentName+"+"+uuidv4();
@@ -87,7 +99,7 @@ router.post('/joinSession', async (req, res) => {
         noNameMsg = "name already exist!"
     }
     // update session collection
-    sessionCollection
+    await sessionCollection
     .updateOne({"sessionID": req.body.sessionUUIDSeed}, 
     {$set: {
         "opponentName": opponentName,
@@ -104,7 +116,7 @@ router.post('/joinSession', async (req, res) => {
     if (result) {
        res.send({ data: result });
     } else {
-        let message = name ? "couldn't find session please provide valid sessionID" : noNameMsg;
+        let message = name ? "Couldn't find session please provide valid sessionID" : noNameMsg;
        res.send({ msg: message});
     }
 });
@@ -122,5 +134,5 @@ router.post('/endSesh', async (req, res) => {
     const matchCollection = db.collection("matches");
     const matchRes = await matchCollection.deleteOne(deleteQuery);
     const seshRes = await sessionCollection.deleteOne(deleteQuery);
-    req.send({ endSeshStatus: "202 ok!!"});
+    res.send({msg: "202 ok!!"});
 });
