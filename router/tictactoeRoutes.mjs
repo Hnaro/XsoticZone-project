@@ -30,11 +30,12 @@ router.post('/playerMove', async (req, res) => {
         if (!playerSeshUUID) {
             const results = await matchCollections
             .insertOne(moveModel);
-            res.send({ response: "202"});
+            res.send({ response: "404"});
         } else {
             const results = await matchCollections
-            .updateOne({"sessionID": req.body.sessionUUID}, 
-            { $set: { "playerMove": req.body.playerMove }});
+            .updateOne({ 
+                "sessionID": req.body.sessionUUID}, 
+            { $set: { "playerID": req.body.playerUUID,"playerMove": req.body.playerMove }});
             res.send({ response: "202"});
         }
     } else {
@@ -42,9 +43,21 @@ router.post('/playerMove', async (req, res) => {
     }
 });
 
+// contionus send of data to monitor movement
+router.post('/getMatchMove', async (req, res) => {
+    const matchCollection = await db.collection("matches");
+    const matchRes = matchCollection.findOne({sessionID: req.body.sessionUUIDSeed});
+    matchRes.then(body => {
+        res.send(body);
+    }).catch(err => {
+        console.log(err);
+    })
+})
+
 // creates the session with UUID
 router.post('/createSession', async (req, res) => {
     const sessionCollection = await db.collection("sessions");
+    const matchCollections = await db.collection("matches");
     // generate uuid here when create
     // generate playerUUID
     const hostUUID = req.body.hostName+"+"+uuidv4();
@@ -62,11 +75,21 @@ router.post('/createSession', async (req, res) => {
         opponentID: "",
         winnerID: ""
     }
+    //match data model
+    const moveModel = { 
+        // this checks for whoever is player id moved
+        playerID: null,
+        // current session
+        sessionID: sessionUUID,
+        // current player move
+        playerMove: null
+    }
+    const matchResult = await matchCollections.insertOne(moveModel);
     const result = await sessionCollection.insertOne(session);
     // uuid for sessionUUID 
     if (result.acknowledged && req.body.hostName) {
         // save to database
-        res.send({res: session, isCreated: true});
+        res.send({res: session, matchRes: matchResult ,isCreated: true});
     } else {
        res.send({isCreated: false});
     }
