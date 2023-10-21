@@ -1,17 +1,17 @@
 <div id="tictactoeboard-container">
-    <div class="row-container">
-        <app-tictactoebox *ngFor="let count of rowCount, let i=index" 
-        [rowId]="1" 
+    <div  class="row-container">
+        <app-tictactoebox *ngFor="let count of colCount, let i=index"
+        [rowId]="1"
+        [colId]="i+1"></app-tictactoebox>
+    </div>
+    <div  class="row-container">
+        <app-tictactoebox  *ngFor="let count of colCount, let i=index"
+        [rowId]="2"
         [colId]="i+1"></app-tictactoebox>
     </div>
     <div class="row-container">
-        <app-tictactoebox *ngFor="let count of rowCount, let i=index" 
-        [rowId]="2" 
-        [colId]="i+1"></app-tictactoebox>
-    </div>
-    <div class="row-container">
-        <app-tictactoebox *ngFor="let count of rowCount, let i=index" 
-        [rowId]="3" 
+        <app-tictactoebox *ngFor="let count of colCount, let i=index"
+        [rowId]="3"
         [colId]="i+1"></app-tictactoebox>
     </div>
 </div>

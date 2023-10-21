@@ -13,6 +13,20 @@ export class BackendServiceService {
   async checkBackend() {
     return await this.http.get(this.defaultUrl);
   }
+  // get player move
+  async getPlayerMove(sessionID: any) {
+    return await this.http.post(this.defaultUrl+"t/getMatchMove", {
+      sessionUUIDSeed: sessionID
+    });
+  }
+  // player move
+  async currentplayerMove(playerID: any, sessionID: any, playerMove: string) {
+    return await this.http.post(this.defaultUrl+"t/playerMove", {
+      playerUUID: playerID,
+      sessionUUID: sessionID,
+      playerMove: playerMove
+    });
+  }
   // create session
   async createSesh(hostname: any) {
     return await this.http.post(

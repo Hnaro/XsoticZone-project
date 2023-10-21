@@ -8,11 +8,11 @@ export class TictactoeGamecontrolService {
   // track the data here
   // use this to track the current player and the enemy
   private currentPlayerBoardData: any[];
-  private currentPlayerUUID: string = "";
-  private hostName: string = "";
-  private sessionUUID: string = "";
-  private opponentName: string = "";
-  private opponentUUID: string = "";
+  private hostUUID: string = " ";
+  private hostName: string = " ";
+  private sessionUUID: string = " ";
+  private opponentName: string = " ";
+  private opponentUUID: string = " ";
   private currentPlayerChar: any;
   private winnerUUID: string | undefined;
   // if data is 1 then it is X
@@ -37,7 +37,7 @@ export class TictactoeGamecontrolService {
     sessionID: string,
     opponentName: string,
     oppponentID: string) {
-    this.currentPlayerUUID = hostID;
+    this.hostUUID = hostID;
     this.hostName = hostName;
     this.sessionUUID = sessionID;
     this.opponentName = opponentName;
@@ -79,11 +79,11 @@ export class TictactoeGamecontrolService {
     return this.currentPlayerChar;
   }
   // get and set for curr player UUID
-  set currPlayerUUID(playerID: string) {
-    this.currentPlayerUUID = playerID;
+  set hostID(playerID: string) {
+    this.hostUUID = playerID;
   }
-  get currPlayerUUID() {
-    return this.currentPlayerUUID;
+  get hostID() {
+    return this.hostUUID;
   }
   // get and set for challenger playerUUID
   set opponentPlayerUUID(opponent: string) {
@@ -95,7 +95,7 @@ export class TictactoeGamecontrolService {
   // check who will take first turn
   whoTakesFirstTurn() {
     if (Math.round(Math.random()) === 0) {
-      return this.currentPlayerUUID;
+      return this.hostUUID;
     } else {
       return this.opponentPlayerUUID;
     }

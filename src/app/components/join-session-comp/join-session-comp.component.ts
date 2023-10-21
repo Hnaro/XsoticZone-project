@@ -28,8 +28,11 @@ export class JoinSessionCompComponent implements DoCheck{
             if (obj.msg) {
               this.serverErrMsg = obj.msg;
             } else {
-              console.log(obj)
+              console.log(obj);
+              this.gameControlService.hostID = obj.data.hostID;
+              this.gameControlService.hostname = obj.data.hostName;
               localStorage.setItem("seshID", obj.data.sessionID);
+              localStorage.setItem("currentUserID", obj.data.opponentID)
               subs.unsubscribe();
             }
           })

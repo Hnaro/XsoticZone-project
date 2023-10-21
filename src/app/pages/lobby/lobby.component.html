@@ -1,6 +1,21 @@
 <div id="lobby-container">
-  <div>
+  <div *ngIf="isHostActive">
     <button (click)="endSession()">End Session</button>
   </div>
+
+  <!-- display the session id hostname  -->
+  <div *ngIf="sessionID || isOpponentJoin">
+    <h4>CurrentSession ID: {{ sessionID }}</h4>
+    <h4>Host Name: {{ hostname }}</h4>
+  </div>
+  <div *ngIf="!isOpponentJoin && isHostActive; else showInfo">
+    <h2>waiting for opponent...</h2>
+  </div>
+  <ng-template #showInfo>
+    <h4>Opponent Name: {{ opponentName }}</h4>
+  </ng-template>
   <app-tictactoe-board></app-tictactoe-board>
+  <div *ngIf="isHostActive">
+    <button (click)="onStart()">Start Game</button>
+  </div>
 </div>
