@@ -27,10 +27,8 @@ export class AppComponent implements OnInit{
             this.isStorageDeleted = true;
             console.log("storage deleted")
           } else {
-            console.log(obj)
             this.isWindowReloaded = true;
           }
-          console.log(this.isStorageDeleted)
           if (this.isStorageDeleted) {
             clearInterval(i);
             if (obj.delLocalStorage && this.isWindowReloaded) {

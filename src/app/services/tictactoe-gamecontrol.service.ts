@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ColRowModel } from '../model/rowModel';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,7 @@ export class TictactoeGamecontrolService {
 
   // track the data here
   // use this to track the current player and the enemy
-  private currentPlayerBoardData: any[];
+  private currentPlayerBoardData: Array<ColRowModel>;
   private hostUUID: string = " ";
   private hostName: string = " ";
   private sessionUUID: string = " ";
@@ -17,7 +18,6 @@ export class TictactoeGamecontrolService {
   private winnerUUID: string | undefined;
   // if data is 1 then it is X
   // if data is 0 then it is 0
-  private tictactoeBoard: number[];
   // win combinations
   winCombinations: Array<number>[] = [
     [0,1,2],
@@ -29,8 +29,11 @@ export class TictactoeGamecontrolService {
     [0,4,8],
     [2,4,6]];
   constructor() {
-    this.tictactoeBoard = new Array(8).fill(undefined);
-    this.currentPlayerBoardData = new Array(8).fill(undefined);
+    this.currentPlayerBoardData = new Array<ColRowModel>(9).fill({
+      playerID: undefined,
+      name: undefined,
+      value: undefined
+    });
   }
   setupCurrentPlayerData(hostID: string,
     hostName: string,
@@ -64,13 +67,6 @@ export class TictactoeGamecontrolService {
   get opponentname() {
     return this.opponentName;
   }
-  // set and get for game record UUID
-  get tictactoeRec() {
-    return this.tictactoeBoard;
-  }
-  set tictactoeRec(rec: number[]) {
-    this.tictactoeBoard = rec;
-  }
   // if X or O
   set currplayerChar(char: string) {
     this.currentPlayerChar = char;
@@ -92,6 +88,13 @@ export class TictactoeGamecontrolService {
   get opponentPlayerUUID() {
     return this.opponentUUID;
   }
+  // curr player board data
+  set currPlayerBoard(board: Array<ColRowModel>) {
+    this.currentPlayerBoardData = board;
+  }
+  get currPlayerBoard() {
+    return this.currentPlayerBoardData;
+  }
   // check who will take first turn
   whoTakesFirstTurn() {
     if (Math.round(Math.random()) === 0) {
@@ -108,14 +111,14 @@ export class TictactoeGamecontrolService {
     let currentWinner: any;
     let winner: any;
     currentWinner = this.winCombinations.forEach((indexesWinCombination, index) => {
-      if (this.tictactoeBoard[indexesWinCombination[0]] == 1 &&
-        this.tictactoeBoard[indexesWinCombination[1]] == 1 &&
-        this.tictactoeBoard[indexesWinCombination[2]] == 1 ) {
+      if (this.currentPlayerBoardData.at(indexesWinCombination[0])?.value == 1 &&
+      this.currentPlayerBoardData.at(indexesWinCombination[1])?.value == 1 &&
+      this.currentPlayerBoardData.at(indexesWinCombination[2])?.value == 1) {
           winner = "X"
       }
-      if (this.tictactoeBoard[indexesWinCombination[0]] == 0 &&
-        this.tictactoeBoard[indexesWinCombination[1]] == 0 &&
-        this.tictactoeBoard[indexesWinCombination[2]] == 0 ) {
+      if (this.currentPlayerBoardData.at(indexesWinCombination[0])?.value == 0 &&
+      this.currentPlayerBoardData.at(indexesWinCombination[1])?.value == 0 &&
+      this.currentPlayerBoardData.at(indexesWinCombination[2])?.value == 0) {
           winner = "O"
       }
       if (!winner && index == 7) {
@@ -127,35 +130,47 @@ export class TictactoeGamecontrolService {
     });
     return winner;
   }
-  private checkColumn(column: number,
-    currentPlayerChar: string,
-    indexes: any[]) {
+  // record the values
+  private recordData(column: number,
+    currentPlayerChar: any,
+    indexes: any[], playerID: any, name: any) {
     // check which column
     for(let i = 0; i < 3; i++) {
       if (column == (i+1)) {
-        if (currentPlayerChar == "X") {
-          this.tictactoeBoard[indexes[i]] = 0;
-        } else {
-          this.tictactoeBoard[indexes[i]] = 1;
+        if (playerID != this.opponentPlayerUUID) {
+          this.currentPlayerBoardData.splice(indexes[i], 1, {
+            playerID: playerID,
+            name: name,
+            value: 0
+          });
+        }
+
+        if (playerID == this.opponentPlayerUUID) {
+          this.currentPlayerBoardData.splice(indexes[i], 1, {
+            playerID: playerID,
+            name: name,
+            value: 1
+          });
         }
       }
     }
   }
   // track player move
-  playerMove(row: any, column: any, currentPlayerChar: any) {
-    console.log("currentPlayerChar: "+currentPlayerChar);
+  playerMove(row: any, column: any, currentPlayerChar: any, playerID: any) {
+    // set name for record
+    let boxLocName = "r"+row+"-"+"c"+column;
     switch(row) {
       case 1:
         let r1Indexes = [0,1,2];
-        this.checkColumn(column, currentPlayerChar, r1Indexes);
+        this.recordData(column, currentPlayerChar, r1Indexes, playerID, boxLocName);
         break;
       case 2:
         let r2Indexes = [3,4,5];
-        this.checkColumn(column, currentPlayerChar, r2Indexes);
+        this.recordData(column, currentPlayerChar, r2Indexes, playerID, boxLocName);
         break;
       case 3:
         let r3Indexes = [6,7,8];
-        this.checkColumn(column, currentPlayerChar, r3Indexes);
+        this.recordData(column, currentPlayerChar, r3Indexes, playerID, boxLocName);
         break;
     }
   }

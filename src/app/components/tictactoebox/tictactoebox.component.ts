@@ -11,36 +11,47 @@ export class TictactoeboxComponent implements OnInit{
   @Input() colId: any;
   @Input() value: string = "";
   @Output() outputWinner = new EventEmitter();
-  constructor(private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService){}
+  constructor(private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService){
+  }
   ngOnInit(): void {
     // default is X first
     // create set Interval here that reads value all the time in the game
-    this.checkPlayerMove()
-    // host is X other player is O
     if (localStorage.getItem("hostID")) {
       this.gameService.currplayerChar = "X";
     } else {
       this.gameService.currplayerChar = "O";
     }
+    this.checkPlayerMove()
+    // host is X other player is O
   }
   async checkPlayerMove() {
     await setInterval( async () => {
-      let currentBoxLoc = "r"+this.rowId+"-"+"c"+this.colId;
+      // after sending part will continue to recieve data from the server
+      let currentBoxLoc = "r"+this.rowId+"-"+"c"+this.colId; // r1-c1
       await this.backendService.getPlayerMove(localStorage.getItem("seshID"))
       .then( body => {
       let subs = body.subscribe(async value => {
         let obj: any;
         obj = value;
-        if (localStorage.getItem("currentUserID")) {
-          if (obj.playerMove == currentBoxLoc && localStorage.getItem("currentUserID") != obj.playerID) {
-            this.value = "X";
+        // record the data to gamecontrol service
+        const moveLocName: string = obj.playerMove
+        // convert the strings to number
+        let currRowNum: number = Number.parseInt(moveLocName.substring(1, 2));
+        let currColNum: number = Number.parseInt(moveLocName.substring(4));
+        // record the data to the memory
+        this.gameService.playerMove(currRowNum, currColNum, this.gameService.currplayerChar, obj.playerID);
+        // after recording data get each data and update the board
+        this.gameService.currPlayerBoard.map(rcObj => {
+          const locName = "r"+this.rowId+"-"+"c"+this.colId;
+          if (rcObj.name == locName) {
+            if (rcObj.value == 0) {
+              this.value = "X";
+            }
+            if (rcObj.value == 1) {
+              this.value = "O";
+            }
           }
-        }
-        if (localStorage.getItem("hostID")) {
-          if (obj.playerMove == currentBoxLoc && localStorage.getItem("hostID") != obj.playerID) {
-            this.value = "O";
-          }
-        }
+        });
         subs.unsubscribe();
       });
     })
@@ -52,12 +63,14 @@ export class TictactoeboxComponent implements OnInit{
       // first check if has value already
       if (!this.value && this.gameService.checkForWinner() == undefined) {
         // record game player moves to memory which is tictactoe board
-        this.gameService.playerMove(this.rowId, this.colId, this.gameService.currplayerChar);
-        this.value = this.gameService.currplayerChar;
-        // send player move to the server
-        let currplayerMove = "r"+this.rowId+"-"+"c"+this.colId;
         let currentPlayerID = localStorage.getItem("hostID") ? localStorage.getItem("hostID") : this.gameService.opponentPlayerUUID;
+        this.gameService.playerMove(this.rowId, this.colId, this.gameService.currplayerChar, currentPlayerID);
+        // sets trhe value for current tictactoe box
+        this.value = this.gameService.currplayerChar;
+        // sets the name for currPlayerLocation box
+        let currplayerMove = "r"+this.rowId+"-"+"c"+this.colId;
         console.log(currentPlayerID);
+        // send player move to the server
         this.backendService.currentplayerMove(currentPlayerID, localStorage.getItem("seshID"), currplayerMove)
         .then(body => {
           let subs = body.subscribe(value => {
@@ -66,6 +79,7 @@ export class TictactoeboxComponent implements OnInit{
             console.log(obj);
           });
         });
+        console.log(this.gameService.currPlayerBoard);
         // checks each time if there is a winner in the board
         if (this.gameService.checkForWinner()){
           console.log("winner from tictactoe box message!! "+this.gameService.checkForWinner()+" wins!!");

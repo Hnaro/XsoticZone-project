@@ -23,6 +23,13 @@ export class LobbyComponent implements OnInit {
   constructor(private router: Router, private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService) {
   }
   ngOnInit(): void {
+/*     let reloadOnce = 0;
+    do {
+      reloadOnce++;
+      setTimeout(() => {
+        location.reload();
+      }, 200);
+    } while (reloadOnce < 1); */
     if (localStorage.getItem("hostID") && localStorage.getItem("seshID")){
       this.isHostActive = true;
       this.sessionID = localStorage.getItem("seshID");

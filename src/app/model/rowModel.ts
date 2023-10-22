@@ -1,7 +1,5 @@
-export interface Column {
-  colName: string;
-  colOutput: string;
-}
-export interface RowsModel {
-  rows: Array<Column>;
+export interface ColRowModel {
+  playerID: string | undefined;
+  name: string | undefined;
+  value: number | undefined;
 }
