@@ -44,7 +44,7 @@ router.post('/playerMove', async (req, res) => {
 });
 
 // contionus send of data to monitor movement
-router.post('/getMatchMove', async (req, res) => {
+router.post('/getMatch', async (req, res) => {
     const matchCollection = await db.collection("matches");
     const matchRes = matchCollection.findOne({sessionID: req.body.sessionUUIDSeed});
     matchRes.then(body => {
@@ -107,6 +107,23 @@ router.post('/findSession', async (req, res) => {
     }
 });
 
+// update session Winner 
+router.post('/sessionWinner', async (req, res) => {
+    const sessionCollection = await db.collection("sessions");
+    let updateRes = sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed },{$set: {
+        "winnerID": req.body.winnerUUIDSeed
+    }})
+
+    let findRes = sessionCollection.findOne({sessionID: req.body.sessionUUIDSeed});
+    findRes.then(body => {
+        if (body.opponentID == req.body.winnerUUIDSeed) {
+            res.send({ winnerName: body.opponentName});
+        } else {
+            res.send({winnerName: body.hostName});
+        }
+    })
+})
+
 // join session
 router.post('/joinSession', async (req, res) => {
     const sessionCollection = await db.collection("sessions");
@@ -142,11 +159,6 @@ router.post('/joinSession', async (req, res) => {
         let message = name ? "Couldn't find session please provide valid sessionID" : noNameMsg;
        res.send({ msg: message});
     }
-});
-
-// check who wins?
-router.get('/winner', async (req, res) => {
-    // if there is a winner put it in the match board
 });
 
 // end session 
