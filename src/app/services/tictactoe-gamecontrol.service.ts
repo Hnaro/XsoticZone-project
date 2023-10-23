@@ -6,16 +6,17 @@ import { ColRowModel } from '../model/rowModel';
 })
 export class TictactoeGamecontrolService {
 
+  private recentCharacter: any | undefined;
   // track the data here
   // use this to track the current player and the enemy
   private currentPlayerBoardData: Array<ColRowModel>;
-  private hostUUID: string = " ";
+  private hostUUID: any | undefined;
   private hostName: string = " ";
   private sessionUUID: string = " ";
   private opponentName: string = " ";
-  private opponentUUID: string = " ";
+  private opponentUUID: any | undefined;
   private currentPlayerChar: any;
-  private winnerUUID: string | undefined;
+  private winnerUUID: any | undefined;
   // if data is 1 then it is X
   // if data is 0 then it is 0
   // win combinations
@@ -45,6 +46,20 @@ export class TictactoeGamecontrolService {
     this.sessionUUID = sessionID;
     this.opponentName = opponentName;
     this.opponentUUID = oppponentID;
+  }
+  // set and get recentChar
+  set recentChar(char: any) {
+    this.recentCharacter = char;
+  }
+  get recentChar() {
+    return this.recentCharacter;
+  }
+  // set and get winner
+  set winner(playerID: string) {
+    this.winnerUUID = playerID;
+  }
+  get winner() {
+    return this.winnerUUID;
   }
   // session id get and set
   set sessionID(sessionID: string) {
@@ -104,7 +119,7 @@ export class TictactoeGamecontrolService {
     }
   }
   // determines the winner
-  checkForWinner() {
+  checkForWinner(playerid: any) {
     // check each possible combination of who wins
     // check if 1 wins means X wins
     // check if 0 wins means O wins
@@ -114,12 +129,14 @@ export class TictactoeGamecontrolService {
       if (this.currentPlayerBoardData.at(indexesWinCombination[0])?.value == 1 &&
       this.currentPlayerBoardData.at(indexesWinCombination[1])?.value == 1 &&
       this.currentPlayerBoardData.at(indexesWinCombination[2])?.value == 1) {
-          winner = "X"
+        // if X wins
+        winner = this.currentPlayerBoardData.at(index)?.playerID;
       }
       if (this.currentPlayerBoardData.at(indexesWinCombination[0])?.value == 0 &&
       this.currentPlayerBoardData.at(indexesWinCombination[1])?.value == 0 &&
       this.currentPlayerBoardData.at(indexesWinCombination[2])?.value == 0) {
-          winner = "O"
+        // if O wins
+        winner = this.currentPlayerBoardData.at(index)?.playerID;
       }
       if (!winner && index == 7) {
         return undefined;

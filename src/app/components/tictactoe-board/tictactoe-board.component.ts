@@ -11,5 +11,6 @@ export class TictactoeBoardComponent implements OnInit {
   colCount = new Array(3);
   // gameservice for controlling the game mechanics
   constructor(private gameService: TictactoeGamecontrolService) {}
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 }

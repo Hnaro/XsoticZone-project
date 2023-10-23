@@ -13,9 +13,16 @@ export class BackendServiceService {
   async checkBackend() {
     return await this.http.get(this.defaultUrl);
   }
+  // update winner
+  async updateWinner(sessionID: any, playerID: any) {
+    return await this.http.post(this.defaultUrl+"t/sessionWinner", {
+      sessionUUIDSeed: sessionID,
+      winnerUUIDSeed: playerID
+    })
+  }
   // get player move
-  async getPlayerMove(sessionID: any) {
-    return await this.http.post(this.defaultUrl+"t/getMatchMove", {
+  async getPlayerMatch(sessionID: any) {
+    return await this.http.post(this.defaultUrl+"t/getMatch", {
       sessionUUIDSeed: sessionID
     });
   }

@@ -14,6 +14,10 @@
   <ng-template #showInfo>
     <h4>Opponent Name: {{ opponentName }}</h4>
   </ng-template>
+  <div>
+    <h1 [(ngModel)]="waitMessage" *ngIf="waitMessage">{{ waitMessage }}</h1>
+  </div>
+  <div *ngIf="winner">{{ winner }}</div>
   <app-tictactoe-board></app-tictactoe-board>
   <div *ngIf="isHostActive">
     <button (click)="onStart()">Start Game</button>
