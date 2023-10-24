@@ -62,12 +62,12 @@ export class TictactoeboxComponent implements OnInit{
   onClick() {
     // first check if current session is host if no host means its opponent
     // run uuid here who will turn first
-    if (this.gameService.firstMove == "X") {
+    if (this.gameService.firstMove == "X" && this.gameService.opponentPlayerUUID == " ") {
       if (localStorage.getItem("hostID")) {
         this.setPlayerMove();
       }
     }
-    if (this.gameService.opponentPlayerUUID != " " && !this.gameService.firstMove) {
+    if (this.gameService.opponentPlayerUUID != " " && this.gameService.firstMove) {
       // first check if has value already
       // if host player is different from old player in database then host turns
       this.backendService.getPlayerMatch(localStorage.getItem("seshID"))
