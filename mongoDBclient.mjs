@@ -10,6 +10,6 @@ export const rundb = () => {
   dbclient.connect().then(success => {
     console.log("database connected!!");
   }).catch(err => {
-    console.log("databse not connected!!")
+    console.log(err);
   })
 }
