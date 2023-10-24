@@ -81,7 +81,7 @@ router.post('/createSession', async (req, res) => {
         playerID: null,
         // current session
         sessionID: sessionUUID,
-        // current player move
+        // current player moves
         playerMove: null
     }
     const matchResult = await matchCollections.insertOne(moveModel);
