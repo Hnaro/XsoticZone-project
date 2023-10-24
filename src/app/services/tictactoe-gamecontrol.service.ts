@@ -6,7 +6,7 @@ import { ColRowModel } from '../model/rowModel';
 })
 export class TictactoeGamecontrolService {
 
-  private recentCharacter: any | undefined;
+  private firstTurn: any | null;
   // track the data here
   // use this to track the current player and the enemy
   private currentPlayerBoardData: Array<ColRowModel>;
@@ -48,11 +48,11 @@ export class TictactoeGamecontrolService {
     this.opponentUUID = oppponentID;
   }
   // set and get recentChar
-  set recentChar(char: any) {
-    this.recentCharacter = char;
+  set firstMove(char: any) {
+    this.firstTurn = char;
   }
-  get recentChar() {
-    return this.recentCharacter;
+  get firstMove() {
+    return this.firstTurn;
   }
   // set and get winner
   set winner(playerID: string) {
@@ -112,11 +112,7 @@ export class TictactoeGamecontrolService {
   }
   // check who will take first turn
   whoTakesFirstTurn() {
-    if (Math.round(Math.random()) === 0) {
-      return this.hostUUID;
-    } else {
-      return this.opponentPlayerUUID;
-    }
+    return Math.round(Math.random());
   }
   // determines the winner
   checkForWinner(playerid: any) {

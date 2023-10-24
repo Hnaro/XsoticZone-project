@@ -10,11 +10,13 @@ export class TictactoeboxComponent implements OnInit{
   @Input() rowId: any;
   @Input() colId: any;
   @Input() value: string = "";
-  @Output() outputWinner = new EventEmitter();
+
+  firstTurn: any | undefined;
   constructor(private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService){
   }
   ngOnInit(): void {
     // default is X first
+    this.gameService.firstMove = "X";
     // create set Interval here that reads value all the time in the game
     if (localStorage.getItem("hostID")) {
       this.gameService.currplayerChar = "X";
@@ -59,7 +61,13 @@ export class TictactoeboxComponent implements OnInit{
   }
   onClick() {
     // first check if current session is host if no host means its opponent
-    if (this.gameService.opponentPlayerUUID != " ") {
+    // run uuid here who will turn first
+    if (this.gameService.firstMove == "X") {
+      if (localStorage.getItem("hostID")) {
+        this.setPlayerMove();
+      }
+    }
+    if (this.gameService.opponentPlayerUUID != " " && !this.gameService.firstMove) {
       // first check if has value already
       // if host player is different from old player in database then host turns
       this.backendService.getPlayerMatch(localStorage.getItem("seshID"))

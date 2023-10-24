@@ -39,30 +39,36 @@ export class LobbyComponent implements OnInit {
           })
         });
       } else {
-        this.backendService.getPlayerMatch(localStorage.getItem("seshID"))
-        .then(body => {
-          let subs = body.subscribe(value => {
-            let obj: any;
-            obj = value;
-            if (localStorage.getItem("hostID") != obj.playerID) {
-              this.waitMessage = "your turn..."
-            }
-            if (localStorage.getItem("currentUserID") != obj.playerID) {
-              this.waitMessage = "your turn..."
-            }
+        if (this.gameService.opponentPlayerUUID) {
+          this.backendService.getPlayerMatch(localStorage.getItem("seshID"))
+          .then(body => {
+            let subs = body.subscribe(value => {
+              let obj: any;
+              obj = value;
+              if (localStorage.getItem("hostID") != obj.playerID) {
+                this.waitMessage = "your turn..."
+              }
+              if (localStorage.getItem("currentUserID") != obj.playerID && !this.gameService.firstMove) {
+                this.waitMessage = "your turn..."
+              } else {
+                if (localStorage.getItem("hostID")) {
+                  this.waitMessage = "your turn..."
+                }
+              }
 
-            if (localStorage.getItem("hostID")) {
-              if (localStorage.getItem("hostID") == obj.playerID) {
-                this.waitMessage = "opponent's turn..";
+              if (localStorage.getItem("hostID")) {
+                if (localStorage.getItem("hostID") == obj.playerID) {
+                  this.waitMessage = "opponent's turn..";
+                }
               }
-            }
-            if (localStorage.getItem("currentUserID")) {
-              if (localStorage.getItem("currentUserID") == obj.playerID){
-                this.waitMessage = "opponent's turn..";
+              if (localStorage.getItem("currentUserID")) {
+                if (localStorage.getItem("currentUserID") == obj.playerID){
+                  this.waitMessage = "opponent's turn..";
+                }
               }
-            }
+            })
           })
-        })
+        }
       }
     }, 2000);
     if (localStorage.getItem("hostID") && localStorage.getItem("seshID")){
