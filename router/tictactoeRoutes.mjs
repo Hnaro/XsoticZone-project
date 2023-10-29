@@ -7,6 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 router.post('/playerMove', async (req, res) => {
     // database collections
     // matches collection
+    let myArray= new Array(3);
+    myArray.length
     const matchCollections = await db.collection("matches");
     // create model for matches collections
     const moveModel = { 
