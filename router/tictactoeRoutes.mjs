@@ -2,6 +2,7 @@ import * as express from 'express';
 export const router = express.Router();
 import { db } from '../app.mjs';
 import { v4 as uuidv4 } from 'uuid';
+import { match } from 'assert';
 
 // watch movement of each player
 router.post('/playerMove', async (req, res) => {
@@ -16,7 +17,7 @@ router.post('/playerMove', async (req, res) => {
         sessionID: req.body.sessionUUID,
         // current player move
         playerMove: req.body.playerMove
-    }
+    } 
     // look for session if session uuid exists
     const sessionCollection = await db.collection("sessions");
     const sessionUUID = await sessionCollection
@@ -41,6 +42,28 @@ router.post('/playerMove', async (req, res) => {
     } else {
         res.send({response: "404"});
     }
+});
+
+// update player status if ready
+router.post('/updateMatchStatus', async (req, res) => {
+    const matchCollection = await db.collection("matches");
+    // check first if current status to update is host or other player
+    // temporary variable for player ID
+    let currentPlayerID = "";
+    // first get playerid if its host or other player
+    matchCollection.findOne({sessionID: req.body.sessionUUIDSeed, playerID: req.body.playerUUID})
+    .then(body => {
+        // gets the player id then update
+        console.log(body);
+    });
+/*     const matchRes = matchCollection.updateOne({"sessionID": req.body.sessionUUIDSeed, }, {
+        $set: {
+            "isPlayerReady": req.body.playerStatus
+        }
+    })
+    matchRes.then(obj => {
+        res.send({msg: "playerReadyUpdated"})
+    }); */
 });
 
 // contionus send of data to monitor movement
@@ -78,11 +101,14 @@ router.post('/createSession', async (req, res) => {
     //match data model
     const moveModel = { 
         // this checks for whoever is player id moved
-        playerID: null,
+        playerID: hostUUID,
         // current session
         sessionID: sessionUUID,
         // current player moves
-        playerMove: null
+        playerMove: null,
+        // player status means if hes ready or if he is host then means if both true means games start
+        // default false
+        isPlayerReady: false
     }
     const matchResult = await matchCollections.insertOne(moveModel);
     const result = await sessionCollection.insertOne(session);
@@ -127,9 +153,27 @@ router.post('/sessionWinner', async (req, res) => {
 // join session
 router.post('/joinSession', async (req, res) => {
     const sessionCollection = await db.collection("sessions");
+    const matchCollection = await db.collection("matches");
     let opponentName;
     let opponentUUID;
     let noNameMsg;
+    // match collection model
+    const matchModel = { 
+        // this checks for whoever is player id moved
+        playerID: opponentUUID,
+        // current session
+        sessionID: req.body.sessionUUIDSeed,
+        // current player moves
+        playerMove: null,
+        // player status means if hes ready or if he is host then means if both true means games start
+        // default false
+        isPlayerReady: false
+    }
+    // add another player match for opponent/other player
+    matchCollection.insertOne(matchModel)
+    .then(body => {
+        console.log(body);
+    });
     // generate current player joining UUID
     let name = await sessionCollection.find({opponentName: req.body.opponentName});
     if (name) {
