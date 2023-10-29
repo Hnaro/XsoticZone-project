@@ -27,6 +27,15 @@ export class LobbyComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // set who is currently in this session
+    if (localStorage.getItem("hostID")) {
+
+    } 
+    
+    if (localStorage.getItem("currentUserID")) {
+
+    }
+
     this.i = setInterval(() => {
       if (this.gameService.checkForWinner(localStorage.getItem("currentUserID"))) {
         this.gameService.winner = this.gameService.checkForWinner(localStorage.getItem("hostID"));
@@ -130,6 +139,7 @@ export class LobbyComponent implements OnInit {
   }
   onStart(){
     // if opponent is ready
+    // update the match data 
   }
   onReady() {
     // when opponent is ready

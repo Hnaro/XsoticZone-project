@@ -22,4 +22,7 @@
   <div *ngIf="isHostActive">
     <button (click)="onStart()">Start Game</button>
   </div>
+  <div *ngIf="!isHostActive">
+    <button (click)="onReady()">Start Game</button>
+  </div>
 </div>

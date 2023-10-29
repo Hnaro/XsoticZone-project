@@ -35,7 +35,7 @@ export class TictactoeboxComponent implements OnInit{
       let subs = body.subscribe(async value => {
         let obj: any;
         obj = value;
-        // record the data to gamecontrol service
+        // temporary store data
         const moveLocName: string = obj.playerMove
         // convert the strings to number
         let currRowNum: number = Number.parseInt(moveLocName.substring(1, 2));
