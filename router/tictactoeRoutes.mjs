@@ -44,7 +44,7 @@ router.post('/updateMatchStatus', async (req, res) => {
         if (body) {
             // udpates the player status
             let result = await matchCollection.updateOne({sessionID: req.body.sessionUUIDSeed,
-            playerID: req.body.playerUUID,},{$set: {"isPlayerReady": req.body.playerStatus}})
+            playerID: req.body.playerUUID},{$set: {"isPlayerReady": req.body.playerStatus}})
             .then(onSucces => {
                 res.send({success: result});
             }).catch(err => {
