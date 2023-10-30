@@ -63,13 +63,15 @@ router.post('/getMatch', async (req, res) => {
                 return value.sessionID == req.body.sessionUUIDSeed && value.playerID == req.body.playerUUID;
             })
         });
-        filteredItems.then(value => {
-            console.log(value)
-            res.send({result: value});
-        });
-    } else {
-        res.send({errMsg: "Match doesn't exist!"})
-    }
+        if (!filteredItems) {
+            res.send({errMsg: "Match doesn't exist!"})
+        } else {
+            filteredItems.then(value => {
+                console.log(value)
+                res.send({result: value});
+            });
+        }
+    } 
 })
 
 // creates the session with UUID
