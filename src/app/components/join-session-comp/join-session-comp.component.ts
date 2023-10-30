@@ -1,4 +1,5 @@
 import { Component, DoCheck } from '@angular/core';
+import { Router } from '@angular/router';
 import { BackendServiceService } from 'src/app/services/backend-service.service';
 import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecontrol.service';
 
@@ -14,7 +15,7 @@ export class JoinSessionCompComponent implements DoCheck{
   errMessage: string | undefined;
   serverErrMsg: string | undefined
   // on join session
-  constructor(private backendService: BackendServiceService,
+  constructor(private router: Router,private backendService: BackendServiceService,
     private gameControlService: TictactoeGamecontrolService) {}
   onJoin() {
     // send join info's
@@ -33,6 +34,7 @@ export class JoinSessionCompComponent implements DoCheck{
               this.gameControlService.hostname = obj.data.hostName;
               localStorage.setItem("seshID", obj.data.sessionID);
               localStorage.setItem("currentUserID", obj.data.opponentID)
+              this.router.navigate(['/lobby'])
               subs.unsubscribe();
             }
           })

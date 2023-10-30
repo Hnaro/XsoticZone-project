@@ -13,7 +13,7 @@ export class HeaderComponent implements DoCheck{
   @Output() refreshPage = new EventEmitter();
   constructor(private backendService: BackendServiceService) {}
   ngDoCheck(): void {
-    if (localStorage.getItem("seshID")) {
+    if (localStorage.getItem("seshID") || localStorage.getItem("currentUserID")) {
       this.sessionActive = true;
     }
   }

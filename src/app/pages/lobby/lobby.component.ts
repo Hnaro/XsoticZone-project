@@ -23,20 +23,10 @@ export class LobbyComponent implements OnInit {
   i: any;
   @Input() waitMessage: any | undefined;
   winner: any | undefined;
-  constructor(private router: Router, private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService) {
-  }
-
+  constructor(private router: Router, private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService) {}
   ngOnInit(): void {
-    // set who is currently in this session
-    if (localStorage.getItem("hostID")) {
-
-    } 
-    
-    if (localStorage.getItem("currentUserID")) {
-
-    }
-
     this.i = setInterval(() => {
+      // checks if there is any winner in the current game
       if (this.gameService.checkForWinner(localStorage.getItem("currentUserID"))) {
         this.gameService.winner = this.gameService.checkForWinner(localStorage.getItem("hostID"));
         this.backendService.updateWinner(localStorage.getItem("seshID"), this.gameService.winner)
@@ -49,34 +39,6 @@ export class LobbyComponent implements OnInit {
         });
       } else {
         if (this.gameService.opponentPlayerUUID) {
-          this.backendService.getPlayerMatch(localStorage.getItem("seshID"))
-          .then(body => {
-            let subs = body.subscribe(value => {
-              let obj: any;
-              obj = value;
-              if (localStorage.getItem("hostID") != obj.playerID) {
-                this.waitMessage = "your turn..."
-              }
-              if (localStorage.getItem("currentUserID") != obj.playerID && !this.gameService.firstMove) {
-                this.waitMessage = "your turn..."
-              } else {
-                if (localStorage.getItem("hostID")) {
-                  this.waitMessage = "your turn..."
-                }
-              }
-
-              if (localStorage.getItem("hostID")) {
-                if (localStorage.getItem("hostID") == obj.playerID) {
-                  this.waitMessage = "opponent's turn..";
-                }
-              }
-              if (localStorage.getItem("currentUserID")) {
-                if (localStorage.getItem("currentUserID") == obj.playerID){
-                  this.waitMessage = "opponent's turn..";
-                }
-              }
-            })
-          })
         }
       }
     }, 2000);
@@ -121,6 +83,7 @@ export class LobbyComponent implements OnInit {
       }
     }, 200);
   }
+  // ends the session
   endSession() {
     this.backendService.endSesh(localStorage.getItem("seshID"))
     .then(body => {
@@ -133,13 +96,14 @@ export class LobbyComponent implements OnInit {
         }
       })
     });
+    // removes all session storage
     localStorage.removeItem("hostID");
     localStorage.removeItem("currentUserID");
     localStorage.removeItem("seshID");
   }
   onStart(){
     // if opponent is ready
-    // update the match data 
+    // update the match data
   }
   onReady() {
     // when opponent is ready

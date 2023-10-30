@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BackendServiceService {
 
-  defaultUrl: string = "http://10.0.0.156:4000/";
+  defaultUrl: string = "http://10.0.0.51:4000/";
   constructor(private http: HttpClient) {}
 
   // check backend connection
@@ -32,7 +32,7 @@ export class BackendServiceService {
       sessionUUIDSeed: sessionUUID,
       playerUUID: playerUUID
     });
-  } 
+  }
   // player move
   async currentplayerMove(playerID: any, sessionID: any, playerMove: string) {
     return await this.http.post(this.defaultUrl+"t/playerMove", {
