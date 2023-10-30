@@ -39,11 +39,11 @@ router.post('/updateMatchStatus', async (req, res) => {
     // first get playerid if its host or other player
     const matchRes = await matchCollection.findOne({sessionID: req.body.sessionUUIDSeed, playerID: req.body.playerUUID})
     if (matchRes) {
-        if (result.acknowledged) {
+        if (matchRes) {
             // udpates the player status
             const result = await matchCollection.updateOne({"sessionID": req.body.sessionUUIDSeed,
             "playerID": req.body.playerUUID},{$set: {"isPlayerReady": req.body.playerStatus}});
-            if (result) {
+            if (result.acknowledged) {
                 res.send({msg: "success!!"});
             }
         }
