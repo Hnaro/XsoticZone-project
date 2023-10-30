@@ -50,9 +50,7 @@ router.post('/updateMatchStatus', async (req, res) => {
                     res.sendStatus(202);
                 }
             }).catch(err => {
-                if (err) {
-                    res.sendStatus(404);
-                }
+                res.sendStatus(404);
             })
         }
     });
