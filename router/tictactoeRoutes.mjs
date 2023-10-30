@@ -46,9 +46,13 @@ router.post('/updateMatchStatus', async (req, res) => {
             let result = await matchCollection.updateOne({"sessionID": req.body.sessionUUIDSeed,
             "playerID": req.body.playerUUID},{$set: {"isPlayerReady": req.body.playerStatus}})
             .then(onSucces => {
-                res.send({success: result});
+                if (onSucces.acknowledged) {
+                    res.sendStatus(202);
+                }
             }).catch(err => {
-                res.send(err);
+                if (err) {
+                    res.sendStatus(404);
+                }
             })
         }
     });
