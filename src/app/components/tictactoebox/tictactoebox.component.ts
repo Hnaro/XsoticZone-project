@@ -11,13 +11,13 @@ export class TictactoeboxComponent implements OnInit{
   @Input() colId: any;
   @Input() value: string = "";
 
+  //roll dice if if 0 then host id if 1 then currentUserID
   firstTurn: any | undefined;
-  constructor(private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService){}
+  constructor(private gameService: TictactoeGamecontrolService, 
+    private backendService: BackendServiceService){}
 
   ngOnInit(): void {
-    // default is X first
-    this.gameService.firstMove = "X";
-    // create set Interval here that reads value all the time in the game
+    // sets the playerChar for player
     if (localStorage.getItem("hostID")) {
       this.gameService.currplayerChar = "X";
     } else {
@@ -34,23 +34,31 @@ export class TictactoeboxComponent implements OnInit{
   }
   onClick() {
     // first check if current session is host if no host means its opponent
+    // can only click if both player is ready
+    // opponent is not ready then game cannot start
+    // if host id is not ready then game cannot start
+
     // run uuid here who will turn first
-    if (this.gameService.firstMove == "X" && this.gameService.opponentPlayerUUID == " ") {
+    if (this.gameService.firstMove == "X" && 
+    this.gameService.opponentPlayerUUID == " ") {
       if (localStorage.getItem("hostID")) {
         this.setPlayerMove();
       }
     }
-    if (this.gameService.opponentPlayerUUID != " " && this.gameService.firstMove) {
+    if (this.gameService.opponentPlayerUUID != " " && 
+    this.gameService.firstMove) {
       // first check if has value already
       // if host player is different from old player in database then host turns
       this.setPlayerMove();
     }
   }
-
+  // sets the player moves
   private setPlayerMove() {
-    if (!this.value && this.gameService.checkForWinner(localStorage.getItem("currentUserID")) == undefined) {
-
-      // record game player moves to memory which is tictactoe board
+    // check first if current box has no value and has no winner
+    if (!this.value && 
+      this.gameService.checkForWinner(localStorage.getItem("currentUserID")) == 
+      undefined) {
+      // record game player moves to memory which is tictactoe board property
       let currentPlayerID = localStorage.getItem("hostID") ? localStorage.getItem("hostID") : this.gameService.opponentPlayerUUID;
       this.gameService.playerMove(this.rowId, this.colId, this.gameService.currplayerChar, currentPlayerID);
 

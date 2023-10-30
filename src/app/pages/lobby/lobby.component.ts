@@ -25,6 +25,14 @@ export class LobbyComponent implements OnInit {
   winner: any | undefined;
   constructor(private router: Router, private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService) {}
   ngOnInit(): void {
+    // picks whoever turn first
+      if (Math.random() == 0) {
+        // send hostID to session
+      }  else {
+        // send currentUserID to session
+      }
+
+    // create set Interval here that reads value all the time in the game
     this.i = setInterval(() => {
       // checks if there is any winner in the current game
       if (this.gameService.checkForWinner(localStorage.getItem("currentUserID"))) {
@@ -83,6 +91,7 @@ export class LobbyComponent implements OnInit {
       }
     }, 200);
   }
+
   // ends the session
   endSession() {
     this.backendService.endSesh(localStorage.getItem("seshID"))
@@ -103,7 +112,7 @@ export class LobbyComponent implements OnInit {
   }
   onStart(){
     // if opponent is ready
-    // update the match data
+    // update the matches data
   }
   onReady() {
     // when opponent is ready
