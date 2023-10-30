@@ -55,6 +55,8 @@ router.post('/updateMatchStatus', async (req, res) => {
                 res.send({errorMsg: "something went wrong!!"});
             })
         }
+    }).catch(err => {
+        res.sendStatus(404);
     });
 });
 
