@@ -8,39 +8,25 @@ import { match } from 'assert';
 router.post('/playerMove', async (req, res) => {
     // database collections
     // matches collection
-    let myArray= new Array(3);
-    myArray.length
-    const matchCollections = await db.collection("matches");
-    // create model for matches collections
+    const sessionCollection = await db.collection("sessions");
+    const matchMoveCollections = await db.collection("matchMoves");
+    //match data model
     const moveModel = { 
         // this checks for whoever is player id moved
         playerID: req.body.playerUUID,
         // current session
         sessionID: req.body.sessionUUID,
-        // current player move
+        // current player moves
         playerMove: req.body.playerMove
-    } 
+    }
     // look for session if session uuid exists
-    const sessionCollection = await db.collection("sessions");
     const sessionUUID = await sessionCollection
-    .findOne({sessionID: req.body.sessionUUID});
-    const playerSeshUUID = await matchCollections
     .findOne({sessionID: req.body.sessionUUID});
     // if sessionUUID exists then insert move
     if (sessionUUID) {
         // if playerSeshUUID doesnt exist then insertOne 
-        // if not then updateOne
-        if (!playerSeshUUID) {
-            const results = await matchCollections
-            .insertOne(moveModel);
-            res.send({ response: "404"});
-        } else {
-            const results = await matchCollections
-            .updateOne({ 
-                "sessionID": req.body.sessionUUID}, 
-            { $set: { "playerID": req.body.playerUUID,"playerMove": req.body.playerMove }});
-            res.send({ response: "202"});
-        }
+        await matchMoveCollections.insertOne(moveModel);
+        res.send({ response: "404"});
     } else {
         res.send({response: "404"});
     }
@@ -50,9 +36,8 @@ router.post('/playerMove', async (req, res) => {
 router.post('/updateMatchStatus', async (req, res) => {
     const matchCollection = await db.collection("matches");
     // check first if current status to update is host or other player
-    // temporary variable for player ID
-    let currentPlayerID = "";
     // first get playerid if its host or other player
+    
     matchCollection.findOne({sessionID: req.body.sessionUUIDSeed, playerID: req.body.playerUUID})
     .then(body => {
         // gets the player id then update
@@ -68,15 +53,22 @@ router.post('/updateMatchStatus', async (req, res) => {
     }); */
 });
 
-// contionus send of data to monitor movement
+// use for contionus send of data to monitor movement
 router.post('/getMatch', async (req, res) => {
-    const matchCollection = await db.collection("matches");
-    const matchRes = matchCollection.findOne({sessionID: req.body.sessionUUIDSeed});
-    matchRes.then(body => {
-        res.send(body);
-    }).catch(err => {
-        console.log(err);
-    })
+    const matchCollection = await db.collection("matchMoves");
+    const matchRes = await matchCollection.find({});
+
+    if (matchRes) {
+        let filteredItems = matchRes.toArray().then(obj => {
+            return obj.filter(value => {
+                return value.sessionID == req.body.sessionUUIDSeed && value.playerID == req.body.playerUUID;
+            })
+        });
+        filteredItems.then(value => {
+            console.log(value)
+            res.send({result: value});
+        });
+    }
 })
 
 // creates the session with UUID
@@ -100,24 +92,20 @@ router.post('/createSession', async (req, res) => {
         opponentID: "",
         winnerID: ""
     }
-    //match data model
-    const moveModel = { 
+    const matchModel = { 
         // this checks for whoever is player id moved
         playerID: hostUUID,
         // current session
         sessionID: sessionUUID,
         // current player moves
-        playerMove: null,
-        // player status means if hes ready or if he is host then means if both true means games start
-        // default false
         isPlayerReady: false
     }
-    const matchResult = await matchCollections.insertOne(moveModel);
+    // inserts the match model for status model
+    const matchRes = await matchCollections.insertOne(matchModel);
     const result = await sessionCollection.insertOne(session);
     // uuid for sessionUUID 
-    if (result.acknowledged && req.body.hostName) {
-        // save to database
-        res.send({res: session, matchRes: matchResult ,isCreated: true});
+    if (result.acknowledged && req.body.hostName && matchRes.acknowledged) {
+        res.send({res: session, isCreated: true});
     } else {
        res.send({isCreated: false});
     }
@@ -140,8 +128,7 @@ router.post('/sessionWinner', async (req, res) => {
     const sessionCollection = await db.collection("sessions");
     let updateRes = sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed },{$set: {
         "winnerID": req.body.winnerUUIDSeed
-    }})
-
+    }});
     let findRes = sessionCollection.findOne({sessionID: req.body.sessionUUIDSeed});
     findRes.then(body => {
         if (body.opponentID == req.body.winnerUUIDSeed) {
@@ -159,30 +146,17 @@ router.post('/joinSession', async (req, res) => {
     let opponentName;
     let opponentUUID;
     let noNameMsg;
+    opponentName = req.body.opponentName;
+    opponentUUID = opponentName+"+"+uuidv4();
     // match collection model
     const matchModel = { 
         // this checks for whoever is player id moved
         playerID: opponentUUID,
         // current session
         sessionID: req.body.sessionUUIDSeed,
-        // current player moves
-        playerMove: null,
         // player status means if hes ready or if he is host then means if both true means games start
         // default false
         isPlayerReady: false
-    }
-    // add another player match for opponent/other player
-    matchCollection.insertOne(matchModel)
-    .then(body => {
-        console.log(body);
-    });
-    // generate current player joining UUID
-    let name = await sessionCollection.find({opponentName: req.body.opponentName});
-    if (name) {
-        opponentName = req.body.opponentName;
-        opponentUUID = opponentName+"+"+uuidv4();
-    } else {
-        noNameMsg = "name already exist!"
     }
     // update session collection
     await sessionCollection
@@ -191,29 +165,28 @@ router.post('/joinSession', async (req, res) => {
         "opponentName": opponentName,
         "opponentID": opponentUUID
     }});
-    // search data
-    // check collection if sessionUUID is match with req.body.sessionUUIDSeed
-    // get collection
-    // iterate through collection
+    // inserts the match model for status model
+    const matchRes = await matchCollection.insertOne(matchModel);
     const result = await sessionCollection
     .findOne({sessionID: req.body.sessionUUIDSeed});
     // if couldnt find send error message "couldn't find session please provide valid sessionUUID"
     // sessionUUID should recieved here
-    if (result) {
+    if (result && matchRes.acknowledged) {
        res.send({ data: result });
     } else {
-        let message = name ? "Couldn't find session please provide valid sessionID" : noNameMsg;
        res.send({ msg: message});
     }
 });
 
-// end session 
+// end session removes all data that has session id of current game
 router.post('/endSesh', async (req, res) => {
     // delete current session ID related
     const deleteQuery = {"sessionID":req.body.sessionUUIDSeed}
     const sessionCollection = db.collection("sessions");
     const matchCollection = db.collection("matches");
-    const matchRes = await matchCollection.deleteOne(deleteQuery);
+    const matchMoveCollection = db.collection("matchMoves")
+    const matchMove = await matchMoveCollection.deleteMany(deleteQuery);
+    const matchRes = await matchCollection.deleteMany(deleteQuery);
     const seshRes = await sessionCollection.deleteOne(deleteQuery);
     res.send({msg: "202 ok!!"});
 });
