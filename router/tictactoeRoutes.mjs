@@ -37,20 +37,23 @@ router.post('/updateMatchStatus', async (req, res) => {
     const matchCollection = await db.collection("matches");
     // check first if current status to update is host or other player
     // first get playerid if its host or other player
-    
-    matchCollection.findOne({sessionID: req.body.sessionUUIDSeed, playerID: req.body.playerUUID})
-    .then(body => {
+    await matchCollection.findOne({sessionID: req.body.sessionUUIDSeed, playerID: req.body.playerUUID})
+    .then( async (body) => {
         // gets the player id then update
-        console.log(body);
-    });
-/*     const matchRes = matchCollection.updateOne({"sessionID": req.body.sessionUUIDSeed, }, {
-        $set: {
-            "isPlayerReady": req.body.playerStatus
+        // using the player found and session ID found
+        if (body) {
+            // udpates the player status
+            let result = await matchCollection.updateOne({"sessionID": req.body.sessionUUIDSeed,
+            "playerID": req.body.playerUUID,},{$set: {"isPlayerReady": req.body.playerStatus}})
+            .then(onSucces => {
+                if (onSucces) {
+                    res.send({success: result});
+                }
+            }).catch(err => {
+                res.sendStatus(404);
+            })
         }
-    })
-    matchRes.then(obj => {
-        res.send({msg: "playerReadyUpdated"})
-    }); */
+    });
 });
 
 // use for contionus send of data to monitor movement
