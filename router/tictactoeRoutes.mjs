@@ -63,7 +63,7 @@ router.post('/getMatch', async (req, res) => {
                 return value.sessionID == req.body.sessionUUIDSeed && value.playerID == req.body.playerUUID;
             })
         });
-        if (!filteredItems) {
+        if ((await filteredItems).length == 0) {
             res.send({errMsg: "Match doesn't exist!"})
         } else {
             filteredItems.then(value => {
