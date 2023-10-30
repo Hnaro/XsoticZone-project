@@ -48,9 +48,11 @@ router.post('/updateMatchStatus', async (req, res) => {
             .then(onSucces => {
                 if (onSucces.acknowledged) {
                     res.sendStatus(202);
+                } else {
+                    res.sendStatus(404);
                 }
             }).catch(err => {
-                res.sendStatus(404);
+                res.send({errorMsg: "something went wrong!!"});
             })
         }
     });
