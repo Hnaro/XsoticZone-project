@@ -67,6 +67,8 @@ router.post('/getMatch', async (req, res) => {
             console.log(value)
             res.send({result: value});
         });
+    } else {
+        res.send({errMsg: "Match doesn't exist!"})
     }
 })
 
