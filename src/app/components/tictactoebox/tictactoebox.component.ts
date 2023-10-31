@@ -18,6 +18,7 @@ export class TictactoeboxComponent implements OnInit{
 
   ngOnInit(): void {
     // sets the playerChar for player
+    this.gameService.firstMove = "X";
     if (localStorage.getItem("hostID")) {
       this.gameService.currplayerChar = "X";
     } else {
@@ -29,14 +30,18 @@ export class TictactoeboxComponent implements OnInit{
   // continously check's player move
   async checkPlayerMove() {
     await setInterval( async () => {
-      // reads all player matchMoves
+      // one for reads all player matchMoves into the gameserivceTictactoeBoard
+      // one for reads the current playerMove if matches the current tictactoe tile then sets its value
+      // whoever is the last player that clicked will be placed on previousPlayer for checking on click
     }, 3000);
   }
-  onClick() {
-    // first check if current session is host if no host means its opponent
+  private onClick() {
     // can only click if both player is ready
     // opponent is not ready then game cannot start
     // if host id is not ready then game cannot start
+    // cannot click when current tile has value 
+    // can only be clicked when previous player is not current player on storage
+
 
     // run uuid here who will turn first
     if (this.gameService.firstMove == "X" && 
