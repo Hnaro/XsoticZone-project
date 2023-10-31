@@ -52,10 +52,56 @@ router.post('/updateMatchStatus', async (req, res) => {
     }
 });
 
-// use for contionus send of data to monitor movement
+//get playermatch Status
+router.post('/getPlayerMatchStatus', async (req, res) => {
+    const matchCollection = await db.collection("matches");
+    const matchRes = await matchCollection.findOne({
+        sessionID: req.body.sessionUUIDSeed,
+        playerID: req.body.playerUUID,
+    })
+    if (matchRes) {
+        res.send({ data: matchRes });
+    } else {
+        res.sendStatus(404);
+    }
+});
+
+// restart match 
+router.post('/restartMatch', async (req, res) => {
+    // restart match delete all matchMoves of the match
+    const matchMoveCollection = await db.collection("matchMoves");
+    const matchesCollection = await db.collection("matches");
+    const sessionCollection = await db.collection("sessions");
+    await matchMoveCollection.deleteMany({sessionID:req.body.sessionUUIDSeed})
+    .then(async (body) => {
+        // set player match status to false
+        const matchesRes = await matchesCollection.updateMany({"sessionID":req.body.sessionUUIDSeed}, {
+            $set: {
+                "isPlayerReady": false
+            }
+        });
+        // set winner to null
+        const sessionWinner = await sessionCollection.updateOne({"sessionID":req.body.sessionUUIDSeed},{
+            $set: {
+                "winnerID":null
+            }
+        })
+        if (body && sessionWinner.acknowledged && matchesRes.acknowledged) {
+            if (body) {
+                res.sendStatus(202);
+            } else {
+                res.sendStatus(404);
+            }
+        }
+    }).catch(err => {
+        res.send({errMsg: "Something went wrong!!"});
+    });
+});
+
+// getmatch moves
 router.post('/getMatch', async (req, res) => {
-    const matchCollection = await db.collection("matchMoves");
-    const matchRes = await matchCollection.find({});
+    const matchMoveCollection = await db.collection("matchMoves");
+    const matchRes = await matchMoveCollection.find({});
 
     if (matchRes) {
         let filteredItems = matchRes.toArray().then(obj => {
@@ -129,9 +175,19 @@ router.post('/findSession', async (req, res) => {
 // update session Winner 
 router.post('/sessionWinner', async (req, res) => {
     const sessionCollection = await db.collection("sessions");
-    let updateRes = sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed },{$set: {
+    const updateRes = sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed },{$set: {
         "winnerID": req.body.winnerUUIDSeed
     }});
+    if (updateRes) {
+        res.sendStatus(202);
+    } else {
+        res.sendStatus(404);
+    }
+})
+
+//gets the winner
+router.post('/getsessionWinner', async (req, res) => {
+    const sessionCollection = await db.collection("sessions");
     let findRes = sessionCollection.findOne({sessionID: req.body.sessionUUIDSeed});
     findRes.then(body => {
         if (body.opponentID == req.body.winnerUUIDSeed) {
@@ -140,7 +196,7 @@ router.post('/sessionWinner', async (req, res) => {
             res.send({winnerName: body.hostName});
         }
     })
-})
+});
 
 // join session
 router.post('/joinSession', async (req, res) => {
