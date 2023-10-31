@@ -35,7 +35,7 @@ export class TictactoeboxComponent implements OnInit{
       // whoever is the last player that clicked will be placed on previousPlayer for checking on click
     }, 3000);
   }
-  private onClick() {
+  onClick() {
     // can only click if both player is ready
     // opponent is not ready then game cannot start
     // if host id is not ready then game cannot start
