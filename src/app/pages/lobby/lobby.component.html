@@ -18,11 +18,14 @@
     <h1 [(ngModel)]="waitMessage" *ngIf="waitMessage">{{ waitMessage }}</h1>
   </div>
   <div *ngIf="winner">{{ winner }}</div>
+  <div *ngIf="isHostActive">
+    <button (click)="onRestart()"> restart game </button>
+  </div>
   <app-tictactoe-board></app-tictactoe-board>
   <div *ngIf="isHostActive">
-    <button (click)="onStart()">Start Game</button>
+    <button *ngIf="!isReady" (click)="onStart()">Start Game</button>
   </div>
   <div *ngIf="!isHostActive">
-    <button (click)="onReady()">Start Game</button>
+    <button *ngIf="!isReady" (click)="onReady()">Ready</button>
   </div>
 </div>

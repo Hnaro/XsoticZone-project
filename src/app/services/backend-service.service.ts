@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BackendServiceService {
 
-  defaultUrl: string = "http://10.0.0.51:4000/";
+  defaultUrl: string = "http://10.44.216.100:4000/";
   constructor(private http: HttpClient) {}
 
   // check backend connection
@@ -26,11 +26,25 @@ export class BackendServiceService {
       sessionUUIDSeed: sessionID
     });
   }
+  // restart match
+  async restartMatch(sessionID: any) {
+    return await this.http.post(this.defaultUrl+"t/restartMatch", {
+      sessionUUIDSeed: sessionID
+    })
+  }
+  // get playerMatch Status
+  async getMatchStatus(sessionUUID: any, playerID: any) {
+    return await this.http.post(this.defaultUrl+"t/getPlayerMatchStatus", {
+      sessionUUIDSeed: sessionUUID,
+      playerUUID: playerID
+    });
+  }
   // update player match
-  async updateMatchStatus(playerUUID: any, sessionUUID: any) {
+  async updateMatchStatus(playerUUID: any, sessionUUID: any, matchStatus?: any) {
     return await this.http.post(this.defaultUrl+"t/updateMatchStatus", {
       sessionUUIDSeed: sessionUUID,
-      playerUUID: playerUUID
+      playerUUID: playerUUID,
+      playerStatus: matchStatus
     });
   }
   // player move
