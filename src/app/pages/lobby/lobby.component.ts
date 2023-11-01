@@ -94,24 +94,7 @@ export class LobbyComponent implements OnInit {
           });
         })
         // check reloadStatus session
-        this.backendService.findSesh(localStorage.getItem("seshID"))
-        .then(body => {
-          let subs = body.subscribe( async (value) => {
-            let obj: any;
-            obj = value;
-            if (obj.data.sessionReloadStatus) {
-              // resets reloadSessionStatus to true
-              await this.backendService.updateReloadStatus(localStorage.getItem("seshID"))
-              .then(body => {
-                let subs = body.subscribe(value => {
-                  console.log(value);
-                  if (value) location.reload();;
-                })
-              });
-              subs.unsubscribe();
-            }
-          });
-        })
+        this.seshReloadStatusCheck();
         // check if opponent is ready
         this.backendService.getMatchStatus(localStorage.getItem("seshID"),
         this.gameService.opponentPlayerUUID)
@@ -126,7 +109,7 @@ export class LobbyComponent implements OnInit {
             }
           })
         });
-      }, 300);
+      }, 3000);
     }
     // returns to home page when seshID is not existing
     setInterval(() => {
@@ -135,7 +118,33 @@ export class LobbyComponent implements OnInit {
       }
     }, 200);
   }
-
+  // check reload Status
+  private async seshReloadStatusCheck() {
+    if (!localStorage.getItem("hostID")) {
+      await this.backendService.findSesh(localStorage.getItem("seshID"))
+      .then(body => {
+        let subs = body.subscribe( async value => {
+          let obj: any;
+          obj = value;
+          if (obj && obj.data.sessionReloadStatus) {
+            await this.backendService.updateReloadStatus(localStorage.getItem("seshID"))
+            .then(body => {
+              let subs = body.subscribe(value => {
+                console.log(value);
+                if (value) {
+                    subs.unsubscribe();
+                }
+              })
+            })
+            .catch(err => {
+              console.log(err);
+            });
+              location.reload();
+          }
+        });
+      });
+    }
+  }
   // ends the session
   async endSession() {
     await this.backendService.endSesh(localStorage.getItem("seshID"))
@@ -146,6 +155,7 @@ export class LobbyComponent implements OnInit {
         if (obj.msg) {
           console.log(obj);
           location.reload();
+          subs.unsubscribe();
         }
       })
     });
@@ -159,13 +169,13 @@ export class LobbyComponent implements OnInit {
     await this.backendService.restartMatch(localStorage.getItem("seshID"))
     .then(body => {
       let subs = body.subscribe(value => {
-        console.log(value);
         if(value) {
+          console.log("match restarted");
+          location.reload();
           subs.unsubscribe();
         }
       });
     })
-    location.reload();
     // resets the board in the game control service
   }
   async onStart(){
