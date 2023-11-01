@@ -15,21 +15,29 @@ router.post('/playerMove', async (req, res) => {
         // this checks for whoever is player id moved
         playerID: req.body.playerUUID,
         // current session
-        sessionID: req.body.sessionUUID,
+        sessionID: req.body.sessionUUIDSeed,
         // current player moves
         playerMove: req.body.playerMove
     }
     // look for session if session uuid exists
-    const sessionUUID = await sessionCollection
-    .findOne({sessionID: req.body.sessionUUID});
-    // if sessionUUID exists then insert move
-    if (sessionUUID) {
-        // if playerSeshUUID doesnt exist then insertOne 
-        await matchMoveCollections.insertOne(moveModel);
-        res.sendStatus(404);
-    } else {
-        res.send(404);
-    }
+    const sessionUUID = await sessionCollection.findOne({sessionID: req.body.sessionUUIDSeed})
+    .then(async onSuccess => {
+            // if sessionUUID exists then insert move
+        if (onSuccess) {
+            // if playerSeshUUID doesnt exist then insertOne 
+            await matchMoveCollections.insertOne(moveModel)
+            .then(onSuccess => {
+                if (onSuccess.acknowledged) {
+                    res.send(onSuccess);
+                }
+            });
+        } else {
+            res.sendStatus(404);
+        }
+    })
+    .catch(err => {
+        res.send({errData: err});
+    });
 });
 
 // update player status if ready
