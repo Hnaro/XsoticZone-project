@@ -51,7 +51,7 @@ export class LobbyComponent implements OnInit {
         // gets the hostname for display
         this.setHostNameView();
         // setup gamecontrol service
-        this.setupGameControlService()
+        this.setupGameControlService();
         // check reloadStatus session
         this.seshReloadStatusCheck();
         // check if opponent is ready
@@ -128,7 +128,7 @@ export class LobbyComponent implements OnInit {
         let obj: any;
         obj = value;
         // update the local property
-        this.isOpponentReady = obj.data.isPlayerReady
+        this.isOpponentReady = obj.data ? obj.data.isPlayerReady : false;
         if(value) {
           subs.unsubscribe();
         }
