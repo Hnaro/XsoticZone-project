@@ -27,7 +27,7 @@ export class BackendServiceService {
     })
   }
   // get player move
-  async getPlayerMatch(sessionID: any) {
+  async getPlayerMatchMove(sessionID: any) {
     return await this.http.post(this.defaultUrl+"t/getMatch", {
       sessionUUIDSeed: sessionID
     });

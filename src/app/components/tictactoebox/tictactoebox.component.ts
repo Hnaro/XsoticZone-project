@@ -9,7 +9,7 @@ import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecont
 export class TictactoeboxComponent implements OnInit{
   @Input() rowId: any;
   @Input() colId: any;
-  @Input() value: string = "";
+  @Input() value: string | undefined;
 
   //roll dice if if 0 then host id if 1 then currentUserID
   firstTurn: any | undefined;
@@ -18,17 +18,20 @@ export class TictactoeboxComponent implements OnInit{
 
   ngOnInit(): void {
     // sets the playerChar for player
+    this.setupPlayerChar();
+    this.checkPlayerMove()
+    // host is X other player is O
+  }
+  private async setupPlayerChar() {
     this.gameService.firstMove = "X";
     if (localStorage.getItem("hostID")) {
       this.gameService.currplayerChar = "X";
     } else {
       this.gameService.currplayerChar = "O";
     }
-    this.checkPlayerMove()
-    // host is X other player is O
   }
   // continously check's player move
-  async checkPlayerMove() {
+  private async checkPlayerMove() {
     await setInterval( async () => {
       // one for reads all player matchMoves into the gameserivceTictactoeBoard
       // one for reads the current playerMove if matches the current tictactoe tile then sets its value
@@ -36,26 +39,41 @@ export class TictactoeboxComponent implements OnInit{
     }, 3000);
   }
   onClick() {
-    // can only click if both player is ready
-    // opponent is not ready then game cannot start
-    // if host id is not ready then game cannot start
     // cannot click when current tile has value 
+    // opponent is not ready then game cannot start
+    this.backendService.getMatchStatus(localStorage.getItem("seshID"),
+    this.gameService.opponentPlayerUUID)
+    .then(body => {
+      let subsI = body.subscribe(value => {
+        let obj:any;
+        obj = value;
+        if (obj.data.isPlayerReady) {
+          // wait for host if ready 
+          this.backendService.getMatchStatus(localStorage.getItem("seshID"), 
+          this.gameService.hostID)
+          .then(body => {
+            let subsJ = body.subscribe(value => {
+              let obj:any;
+              obj = value;
+              if (obj.data.isPlayerReady) {
+                this.setPlayerMove();
+                subsI.unsubscribe();
+                subsJ.unsubscribe();
+              }else {
+                console.log("please ready first");
+              }
+            });
+          });
+        } 
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    // if host id is not ready then game cannot start
+
+    // implement this feature for alternate
     // can only be clicked when previous player is not current player on storage
-
-
-    // run uuid here who will turn first
-    if (this.gameService.firstMove == "X" && 
-    this.gameService.opponentPlayerUUID == " ") {
-      if (localStorage.getItem("hostID")) {
-        this.setPlayerMove();
-      }
-    }
-    if (this.gameService.opponentPlayerUUID != " " && 
-    this.gameService.firstMove) {
-      // first check if has value already
-      // if host player is different from old player in database then host turns
-      this.setPlayerMove();
-    }
   }
   // sets the player moves
   private setPlayerMove() {

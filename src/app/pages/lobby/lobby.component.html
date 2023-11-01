@@ -19,7 +19,7 @@
   </div>
   <div *ngIf="winner">{{ winner }}</div>
   <div *ngIf="isHostActive">
-    <button (click)="onRestart()"> restart game </button>
+    <button *ngIf="isReady" (click)="onRestart()"> restart game </button>
   </div>
   <app-tictactoe-board></app-tictactoe-board>
   <div *ngIf="isHostActive">

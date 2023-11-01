@@ -9,7 +9,6 @@ import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecont
   styleUrls: ['./lobby.component.css']
 })
 export class LobbyComponent implements OnInit {
-  t: any;
   // only for player who will join
   isHostActive: boolean = false;
   // display lobby info property
@@ -20,44 +19,56 @@ export class LobbyComponent implements OnInit {
   // check if another player joined
   isOpponentJoin: boolean | undefined;
   isGameStarted: any;
-  i: any;
   winner: any | undefined;
   isReady: boolean = false;
-
   @Input() waitMessage: any | undefined;
-
   // for host only
   isOpponentReady: boolean = false;
-  constructor(private router: Router, private gameService: TictactoeGamecontrolService, private backendService: BackendServiceService) {}
+
+  constructor(private router: Router, private gameService: 
+    TictactoeGamecontrolService, private backendService: 
+    BackendServiceService) {}
   ngOnInit(): void {
-
-    // picks whoever turn first
-      if (Math.random() == 0) {
-        // send hostID to session
-      }  else {
-        // send currentUserID to session
+    // sets up the lobby
+    this.lobbySetup();
+    // returns to home page when seshID is not existing
+    setInterval(() => {
+      if (!localStorage.getItem("seshID")) {
+        this.router.navigate(['/'])
       }
-    this.checkIfPlayersReady();
-    // create set Interval here that reads value all the time in the game
-    this.i = setInterval(() => {
-    // add feature if match Reload is true on sessionStatusReload
-    // then reload once if localstorage is opponentID or currentUserID
-    // then after reload once sets the sessionStatus back to false
-
-      // checks if there is any winner in the current game
-      if (this.gameService.checkForWinner(localStorage.getItem("currentUserID"))) {
-        this.gameService.winner = this.gameService.checkForWinner(localStorage.getItem("hostID"));
-        this.backendService.updateWinner(localStorage.getItem("seshID"), this.gameService.winner)
-        .then(body => {
-          let subs = body.subscribe(value => {
-            let obj: any;
-            obj = value;
-            this.waitMessage = "winner is: "+obj.winnerName;
-          })
-        });
-      }
-    }, 2000);
-    // gets the hostname for display
+    }, 200);
+  }
+  // lobby game setup 
+  private async lobbySetup() {
+    if (localStorage.getItem("seshID")) {
+      // looking for opponent
+      setInterval(() => {
+        // picks whoever turn first
+        this.checkFirstTurn();
+        this.checkIfPlayersReady();
+        // checks if there is any winner in the current game
+        this.checkWinner();
+        // gets the hostname for display
+        this.setHostNameView();
+        // setup gamecontrol service
+        this.setupGameControlService()
+        // check reloadStatus session
+        this.seshReloadStatusCheck();
+        // check if opponent is ready
+        this.checkOpponentIfReady();
+      }, 3000);
+    }
+  }
+  // who will take first turn roll 0 and 1
+  private async checkFirstTurn() {
+    if (Math.random() == 0) {
+      // send hostID to session
+    }  else {
+      // send currentUserID to session
+    }
+  }
+  // get hostname
+  private async setHostNameView() {
     if (localStorage.getItem("hostID") && localStorage.getItem("seshID")){
       this.isHostActive = true;
       this.sessionID = localStorage.getItem("seshID");
@@ -70,53 +81,59 @@ export class LobbyComponent implements OnInit {
             this.hostname = obj.data.hostName;
           })
         })
-    }
-    // wait for opponent
-    if (localStorage.getItem("seshID")) {
-      // looking for opponent
-      setInterval(() => {
-        this.backendService.findSesh(localStorage.getItem("seshID"))
-        .then(body => {
-          let subs = body.subscribe(value => {
-            let obj: any;
-            obj = value;
-            if (obj.data.opponentName && obj.data.opponentID) {
-              // sets the gameservuce and other local properties
-              this.gameService.opponentname = obj.data.opponentName;
-              this.gameService.opponentPlayerUUID = obj.data.opponentID;
-              this.isOpponentJoin = true;
-              this.opponentName = this.gameService.opponentname;
-              this.opponentSeshID = obj.data.sessionID;
-              this.sessionID = localStorage.getItem("seshID");
-              this.hostname = obj.data.hostName;
-              subs.unsubscribe();
-            }
-          });
-        })
-        // check reloadStatus session
-        this.seshReloadStatusCheck();
-        // check if opponent is ready
-        this.backendService.getMatchStatus(localStorage.getItem("seshID"),
-        this.gameService.opponentPlayerUUID)
-        .then(body => {
-          let subs = body.subscribe(value => {
-            let obj: any;
-            obj = value;
-            // update the local property
-            this.isOpponentReady = obj.data.isPlayerReady
-            if(value) {
-              subs.unsubscribe();
-            }
-          })
-        });
-      }, 3000);
-    }
-    // returns to home page when seshID is not existing
-    setInterval(() => {
-      if (!localStorage.getItem("seshID")) {
-        this.router.navigate(['/'])
       }
-    }, 200);
+  }
+  // check for winner 
+  private async checkWinner() {
+    if (this.gameService.checkForWinner(localStorage.getItem("currentUserID"))) {
+      this.gameService.winner = this.gameService.checkForWinner(localStorage.getItem("hostID"));
+      this.backendService.updateWinner(localStorage.getItem("seshID"), this.gameService.winner)
+      .then(body => {
+        let subs = body.subscribe(value => {
+          let obj: any;
+          obj = value;
+          this.waitMessage = "winner is: "+obj.winnerName;
+        })
+      });
+    }
+  }
+  // set up game control service info
+  private async setupGameControlService(){
+    this.backendService.findSesh(localStorage.getItem("seshID"))
+    .then(body => {
+      let subs = body.subscribe(value => {
+        let obj: any;
+        obj = value;
+        if (obj.data.opponentName && obj.data.opponentID) {
+          // sets the gameservuce and other local properties
+          this.gameService.opponentname = obj.data.opponentName;
+          this.gameService.opponentPlayerUUID = obj.data.opponentID;
+          this.isOpponentJoin = true;
+          this.opponentName = this.gameService.opponentname;
+          this.opponentSeshID = obj.data.sessionID;
+          this.sessionID = localStorage.getItem("seshID");
+          this.hostname = obj.data.hostName;
+          this.gameService.hostID = obj.data.hostID;
+          subs.unsubscribe();
+        }
+      });
+    })
+  }
+  // check if opponent is ready
+  private async checkOpponentIfReady() {
+    this.backendService.getMatchStatus(localStorage.getItem("seshID"),
+    this.gameService.opponentPlayerUUID)
+    .then(body => {
+      let subs = body.subscribe(value => {
+        let obj: any;
+        obj = value;
+        // update the local property
+        this.isOpponentReady = obj.data.isPlayerReady
+        if(value) {
+          subs.unsubscribe();
+        }
+      })
+    });
   }
   // check reload Status
   private async seshReloadStatusCheck() {
@@ -145,6 +162,25 @@ export class LobbyComponent implements OnInit {
       });
     }
   }
+  // updates the button ready and startgame for users visibility
+  private async checkIfPlayersReady() {
+    let currentPlayer = localStorage.getItem("hostID") ? localStorage.getItem("hostID") :
+    localStorage.getItem("currentUserID");
+    // get match status if player is ready or not
+    await this.backendService.getMatchStatus(localStorage.getItem("seshID"), currentPlayer)
+    .then(body => {
+      let subs = body.subscribe(value => {
+        let obj: any;
+        obj = value;
+        this.isReady = obj.data.isPlayerReady;
+        if (value) {
+          subs.unsubscribe();
+        }
+      });
+    });
+  }
+  
+  // click functions
   // ends the session
   async endSession() {
     await this.backendService.endSesh(localStorage.getItem("seshID"))
@@ -212,21 +248,5 @@ export class LobbyComponent implements OnInit {
       });
     });
     // when opponent is ready
-  }
-  // updates the button ready and startgame for users visibility
-  private async checkIfPlayersReady() {
-    let currentPlayer = localStorage.getItem("hostID") ? localStorage.getItem("hostID") :
-    localStorage.getItem("currentUserID");
-    await this.backendService.getMatchStatus(localStorage.getItem("seshID"), currentPlayer)
-    .then(body => {
-      let subs = body.subscribe(value => {
-        let obj: any;
-        obj = value;
-        this.isReady = obj.data.isPlayerReady;
-        if (value) {
-          subs.unsubscribe();
-        }
-      });
-    });
   }
 }
