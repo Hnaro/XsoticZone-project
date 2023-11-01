@@ -171,7 +171,7 @@ export class LobbyComponent implements OnInit {
     .then(body => {
       let subs = body.subscribe(value => {
         let obj: any;
-        obj = value;
+        obj = value
         this.isReady = obj.data.isPlayerReady;
         if (value) {
           subs.unsubscribe();

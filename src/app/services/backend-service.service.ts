@@ -57,7 +57,7 @@ export class BackendServiceService {
   async currentplayerMove(playerID: any, sessionID: any, playerMove: string) {
     return await this.http.post(this.defaultUrl+"t/playerMove", {
       playerUUID: playerID,
-      sessionUUID: sessionID,
+      sessionUUIDSeed: sessionID,
       playerMove: playerMove
     });
   }
