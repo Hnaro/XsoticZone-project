@@ -25,8 +25,8 @@ export class LobbyComponent implements OnInit {
   // for host only
   isOpponentReady: boolean = false;
 
-  constructor(private router: Router, private gameService: 
-    TictactoeGamecontrolService, private backendService: 
+  constructor(private router: Router, private gameService:
+    TictactoeGamecontrolService, private backendService:
     BackendServiceService) {}
   ngOnInit(): void {
     // sets up the lobby
@@ -38,7 +38,7 @@ export class LobbyComponent implements OnInit {
       }
     }, 200);
   }
-  // lobby game setup 
+  // lobby game setup
   private async lobbySetup() {
     if (localStorage.getItem("seshID")) {
       // looking for opponent
@@ -83,7 +83,7 @@ export class LobbyComponent implements OnInit {
         })
       }
   }
-  // check for winner 
+  // check for winner
   private async checkWinner() {
     if (this.gameService.checkForWinner(localStorage.getItem("currentUserID"))) {
       this.gameService.winner = this.gameService.checkForWinner(localStorage.getItem("hostID"));
@@ -117,7 +117,7 @@ export class LobbyComponent implements OnInit {
           subs.unsubscribe();
         }
       });
-    })
+    });
   }
   // check if opponent is ready
   private async checkOpponentIfReady() {
@@ -179,7 +179,7 @@ export class LobbyComponent implements OnInit {
       });
     });
   }
-  
+
   // click functions
   // ends the session
   async endSession() {
