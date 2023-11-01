@@ -26,9 +26,9 @@ router.post('/playerMove', async (req, res) => {
     if (sessionUUID) {
         // if playerSeshUUID doesnt exist then insertOne 
         await matchMoveCollections.insertOne(moveModel);
-        res.send({ response: "404"});
+        res.sendStatus(404);
     } else {
-        res.send({response: "404"});
+        res.send(404);
     }
 });
 
@@ -94,7 +94,7 @@ router.post('/restartMatch', async (req, res) => {
         })
         if (body && sessionWinner.acknowledged && matchesRes.acknowledged && sessionRes.acknowledged) {
             if (body) {
-                res.sendStatus(202);
+                res.send(body);
             } else {
                 res.sendStatus(404);
             }
@@ -191,7 +191,7 @@ router.post("/updatesessionReloadStatus", async (req, res) => {
         }
     })
     if (sessionRes.acknowledged) {
-        res.sendStatus(202);
+        res.send(sessionRes);
     } else {
         res.sendStatus(404);
     }
