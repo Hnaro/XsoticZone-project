@@ -74,6 +74,12 @@ router.post('/restartMatch', async (req, res) => {
     const sessionCollection = await db.collection("sessions");
     await matchMoveCollection.deleteMany({sessionID:req.body.sessionUUIDSeed})
     .then(async (body) => {
+        // set reload status to true
+        const sessionRes = await sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed}, {
+            $set: {
+                "sessionReloadStatus":true
+            }
+        });
         // set player match status to false
         const matchesRes = await matchesCollection.updateMany({"sessionID":req.body.sessionUUIDSeed}, {
             $set: {
@@ -86,7 +92,7 @@ router.post('/restartMatch', async (req, res) => {
                 "winnerID":null
             }
         })
-        if (body && sessionWinner.acknowledged && matchesRes.acknowledged) {
+        if (body && sessionWinner.acknowledged && matchesRes.acknowledged && sessionRes.acknowledged) {
             if (body) {
                 res.sendStatus(202);
             } else {
@@ -137,9 +143,11 @@ router.post('/createSession', async (req, res) => {
         hostID: hostUUID,
         sessionID: sessionUUID,
         hostName: hostname,
-        opponentName: "",
-        opponentID: "",
-        winnerID: ""
+        opponentName: null,
+        opponentID: null,
+        firstTurnID: null,
+        sessionReloadStatus: false,
+        winnerID: null
     }
     const matchModel = { 
         // this checks for whoever is player id moved
