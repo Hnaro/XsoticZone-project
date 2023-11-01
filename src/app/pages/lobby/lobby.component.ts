@@ -43,7 +43,7 @@ export class LobbyComponent implements OnInit {
     // add feature if match Reload is true on sessionStatusReload
     // then reload once if localstorage is opponentID or currentUserID
     // then after reload once sets the sessionStatus back to false
-    
+
       // checks if there is any winner in the current game
       if (this.gameService.checkForWinner(localStorage.getItem("currentUserID"))) {
         this.gameService.winner = this.gameService.checkForWinner(localStorage.getItem("hostID"));
@@ -55,7 +55,7 @@ export class LobbyComponent implements OnInit {
             this.waitMessage = "winner is: "+obj.winnerName;
           })
         });
-      } 
+      }
     }, 2000);
     // gets the hostname for display
     if (localStorage.getItem("hostID") && localStorage.getItem("seshID")){
@@ -93,6 +93,25 @@ export class LobbyComponent implements OnInit {
             }
           });
         })
+        // check reloadStatus session
+        this.backendService.findSesh(localStorage.getItem("seshID"))
+        .then(body => {
+          let subs = body.subscribe( async (value) => {
+            let obj: any;
+            obj = value;
+            if (obj.data.sessionReloadStatus) {
+              // resets reloadSessionStatus to true
+              await this.backendService.updateReloadStatus(localStorage.getItem("seshID"))
+              .then(body => {
+                let subs = body.subscribe(value => {
+                  console.log(value);
+                  if (value) location.reload();;
+                })
+              });
+              subs.unsubscribe();
+            }
+          });
+        })
         // check if opponent is ready
         this.backendService.getMatchStatus(localStorage.getItem("seshID"),
         this.gameService.opponentPlayerUUID)
@@ -107,7 +126,7 @@ export class LobbyComponent implements OnInit {
             }
           })
         });
-      }, 1000);
+      }, 300);
     }
     // returns to home page when seshID is not existing
     setInterval(() => {
@@ -136,8 +155,6 @@ export class LobbyComponent implements OnInit {
     localStorage.removeItem("seshID");
   }
   async onRestart() {
-    // add a feature here that when reloads sets the sessionReloadStatus to true
-
     // resets the move matches only and players isPlayerReady status will be false
     await this.backendService.restartMatch(localStorage.getItem("seshID"))
     .then(body => {
@@ -156,7 +173,7 @@ export class LobbyComponent implements OnInit {
     // host can start
     if (this.isOpponentReady) {
       // if opponent is ready
-      await this.backendService.updateMatchStatus(localStorage.getItem("hostID"), 
+      await this.backendService.updateMatchStatus(localStorage.getItem("hostID"),
       localStorage.getItem("seshID"), true).then(body => {
         let subs = body.subscribe(data => {
           console.log(data);
@@ -173,7 +190,7 @@ export class LobbyComponent implements OnInit {
     // update the matches data
   }
   async onReady() {
-    await this.backendService.updateMatchStatus(localStorage.getItem("currentUserID"), 
+    await this.backendService.updateMatchStatus(localStorage.getItem("currentUserID"),
     localStorage.getItem("seshID"), true).then(body => {
       let subs = body.subscribe(data => {
         console.log(data);
@@ -181,14 +198,14 @@ export class LobbyComponent implements OnInit {
           // hides the ready button
           this.isReady = true;
           subs.unsubscribe();
-        } 
+        }
       });
     });
     // when opponent is ready
   }
-  // updates the button ready and startgame for users visibility 
+  // updates the button ready and startgame for users visibility
   private async checkIfPlayersReady() {
-    let currentPlayer = localStorage.getItem("hostID") ? localStorage.getItem("hostID") : 
+    let currentPlayer = localStorage.getItem("hostID") ? localStorage.getItem("hostID") :
     localStorage.getItem("currentUserID");
     await this.backendService.getMatchStatus(localStorage.getItem("seshID"), currentPlayer)
     .then(body => {

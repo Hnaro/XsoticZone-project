@@ -6,12 +6,18 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BackendServiceService {
 
-  defaultUrl: string = "http://10.44.216.100:4000/";
+  defaultUrl: string = "http://10.0.0.51:4000/";
   constructor(private http: HttpClient) {}
 
   // check backend connection
   async checkBackend() {
     return await this.http.get(this.defaultUrl);
+  }
+  // updates reload status
+  async updateReloadStatus(sessionID: any) {
+    return await this.http.post(this.defaultUrl+"t/updatesessionReloadStatus", {
+      sessionUUIDSeed: sessionID
+    });
   }
   // update winner
   async updateWinner(sessionID: any, playerID: any) {
