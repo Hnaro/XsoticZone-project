@@ -75,9 +75,9 @@ router.post('/restartMatch', async (req, res) => {
     await matchMoveCollection.deleteMany({sessionID:req.body.sessionUUIDSeed})
     .then(async (body) => {
         // set reload status to true
-        const sessionRes = await sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed}, {
+        const sessionRes = await sessionCollection.updateOne({"sessionID":req.body.sessionUUIDSeed}, {
             $set: {
-                "sessionReloadStatus":true
+                "sessionReloadStatus": true
             }
         });
         // set player match status to false
@@ -168,6 +168,7 @@ router.post('/createSession', async (req, res) => {
     }
 });
 
+// finds session
 router.post('/findSession', async (req, res) => {
     // first get collection
     const sessionCollection = await db.collection("sessions");
@@ -177,6 +178,22 @@ router.post('/findSession', async (req, res) => {
         res.send({data: result});
     } else {
         res.send({msg: "Could not found Session ID!", delLocalStorage: true});
+    }
+});
+
+// updates the reloadStatus
+router.post("/updatesessionReloadStatus", async (req, res) => {
+    // first get collection
+    const sessionCollection = await db.collection("sessions");
+    let sessionRes = await sessionCollection.updateOne({"sessionID":req.body.sessionUUIDSeed}, {
+        $set: {
+            "sessionReloadStatus": false
+        }
+    })
+    if (sessionRes.acknowledged) {
+        res.sendStatus(202);
+    } else {
+        res.sendStatus(404);
     }
 });
 
