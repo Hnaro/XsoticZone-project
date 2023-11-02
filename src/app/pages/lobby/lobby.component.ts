@@ -59,6 +59,10 @@ export class LobbyComponent implements OnInit {
       }, 3000);
     }
   }
+  // gets player move
+  private async checkOtherPlayerMove() {
+
+  }
   // who will take first turn roll 0 and 1
   private async checkFirstTurn() {
     if (Math.random() == 0) {
