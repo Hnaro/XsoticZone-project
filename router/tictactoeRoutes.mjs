@@ -66,11 +66,11 @@ router.post('/getPlayerMatchStatus', async (req, res) => {
     const matchRes = await matchCollection.findOne({
         sessionID: req.body.sessionUUIDSeed,
         playerID: req.body.playerUUID,
-    })
+    });
     if (matchRes) {
         res.send({ data: matchRes });
     } else {
-        res.sendStatus(404);
+        res.send({ err: "couldn't get player match status!!"})
     }
 });
 
@@ -266,7 +266,7 @@ router.post('/joinSession', async (req, res) => {
     if (result && matchRes.acknowledged) {
        res.send({ data: result });
     } else {
-       res.send({ msg: message});
+       res.sendStatus(404);
     }
 });
 
