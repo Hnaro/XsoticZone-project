@@ -56,12 +56,22 @@ export class LobbyComponent implements OnInit {
         this.seshReloadStatusCheck();
         // check if opponent is ready
         this.checkOpponentIfReady();
+        // track players movement
+        this.checkOtherPlayerMove()
       }, 3000);
     }
   }
   // gets player move
   private async checkOtherPlayerMove() {
-
+    this.backendService.getPlayerMatchMove(localStorage.getItem("seshID"))
+    .then(body => {
+      let subs = body.subscribe(value => {
+        if (value) {
+          console.log(value);
+          subs.unsubscribe();
+        }
+      });
+    });
   }
   // who will take first turn roll 0 and 1
   private async checkFirstTurn() {
