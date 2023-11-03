@@ -57,6 +57,7 @@ router.post('/updateMatchStatus', async (req, res) => {
         }
     } else {
         res.send({errorMsg: "something went wrong!!"});
+
     }
 });
 
@@ -65,12 +66,12 @@ router.post('/getPlayerMatchStatus', async (req, res) => {
     const matchCollection = await db.collection("matches");
     const matchRes = await matchCollection.findOne({
         sessionID: req.body.sessionUUIDSeed,
-        playerID: req.body.playerUUID,
+        playerID: req.body.playerUUID
     });
     if (matchRes) {
-        res.send({ data: matchRes });
+        res.send({data:matchRes });
     } else {
-        res.send({ err: "couldn't get player match status!!"})
+        res.send({err:"couldn't get player match status!!"});
     }
 });
 
