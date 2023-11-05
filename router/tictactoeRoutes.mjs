@@ -81,36 +81,25 @@ router.post('/restartMatch', async (req, res) => {
     const matchMoveCollection = await db.collection("matchMoves");
     const matchesCollection = await db.collection("matches");
     const sessionCollection = await db.collection("sessions");
-    await matchMoveCollection.deleteMany({sessionID:req.body.sessionUUIDSeed})
-    .then(async (body) => {
-        // set reload status to true
-        const sessionRes = await sessionCollection.updateOne({"sessionID":req.body.sessionUUIDSeed}, {
-            $set: {
-                "sessionReloadStatus": true
-            }
-        });
-        // set player match status to false
-        const matchesRes = await matchesCollection.updateMany({"sessionID":req.body.sessionUUIDSeed}, {
-            $set: {
-                "isPlayerReady": false
-            }
-        });
-        // set winner to null
-        const sessionWinner = await sessionCollection.updateOne({"sessionID":req.body.sessionUUIDSeed},{
-            $set: {
-                "winnerID":null
-            }
-        })
-        if (body && sessionWinner.acknowledged && matchesRes.acknowledged && sessionRes.acknowledged) {
-            if (body) {
-                res.send(body);
-            } else {
-                res.sendStatus(404);
-            }
+    // set reload status to true
+    const sessionRes = await sessionCollection.updateOne({"sessionID":req.body.sessionUUIDSeed}, {
+        $set: {
+            "sessionReloadStatus":true,
+            "winnerID": null
         }
-    }).catch(err => {
-        res.send({errMsg: "Something went wrong!!"});
     });
+    // set player match status to false
+    const matchesRes = await matchesCollection.updateMany({"sessionID":req.body.sessionUUIDSeed}, {
+        $set: {
+            "isPlayerReady": false
+        }
+    });
+    const deleteRes = await matchMoveCollection.deleteMany({sessionID:req.body.sessionUUIDSeed});
+    if (deleteRes.acknowledged && sessionRes.acknowledged) {
+        res.send(sessionRes.acknowledged);
+    } else {
+        res.send({errMsg: "something went wrong!!"});
+    }
 });
 
 // getmatch moves
@@ -121,14 +110,13 @@ router.post('/getMatch', async (req, res) => {
     if (matchRes) {
         let filteredItems = matchRes.toArray().then(obj => {
             return obj.filter(value => {
-                return value.sessionID == req.body.sessionUUIDSeed && value.playerID == req.body.playerUUID;
+                return value.sessionID == req.body.sessionUUIDSeed;
             })
         });
         if ((await filteredItems).length == 0) {
-            res.send({errMsg: "Match doesn't exist!"})
+            res.send(null);
         } else {
             filteredItems.then(value => {
-                console.log(value)
                 res.send({result: value});
             });
         }
@@ -154,7 +142,7 @@ router.post('/createSession', async (req, res) => {
         hostName: hostname,
         opponentName: null,
         opponentID: null,
-        firstTurnID: null,
+        turnID: null,
         sessionReloadStatus: false,
         winnerID: null
     }
@@ -177,7 +165,7 @@ router.post('/createSession', async (req, res) => {
     }
 });
 
-// finds session
+// finds session use this for random retrieval of 1 session info
 router.post('/findSession', async (req, res) => {
     // first get collection
     const sessionCollection = await db.collection("sessions");
@@ -207,22 +195,42 @@ router.post("/updatesessionReloadStatus", async (req, res) => {
 });
 
 // update session Winner 
-router.post('/sessionWinner', async (req, res) => {
+router.post('/updateSessionWinner', async (req, res) => {
     const sessionCollection = await db.collection("sessions");
-    const updateRes = sessionCollection.updateOne({"sessionID": req.body.sessionUUIDSeed },{$set: {
+    const updateRes = await sessionCollection
+    .updateOne({"sessionID": req.body.sessionUUIDSeed },
+    {$set: {
         "winnerID": req.body.winnerUUIDSeed
     }});
     if (updateRes) {
-        res.sendStatus(202);
+        res.send(updateRes);
     } else {
-        res.sendStatus(404);
+        res.send({ errMsg: "could not find data!!"});
+    }
+})
+
+// update session turn 
+router.post('/updateSessionTurn', async (req, res) => {
+    const sessionCollection = await db.collection("sessions");
+    const sessionTurnRes = await sessionCollection.updateOne({
+        "sessionID":req.body.sessionUUIDSeed
+    }, {
+        $set: {
+            "turnID": req.body.sessionTurnID
+        }
+    });
+    if (sessionTurnRes.acknowledged) {
+        // sends back the search result
+        res.send({ msg: "202 success!!"});
+    } else {
+        res.send({errMsg: "something went wrong!!"});
     }
 })
 
 //gets the winner
 router.post('/getsessionWinner', async (req, res) => {
     const sessionCollection = await db.collection("sessions");
-    let findRes = sessionCollection.findOne({sessionID: req.body.sessionUUIDSeed});
+    let findRes = await sessionCollection.findOne({sessionID: req.body.sessionUUIDSeed});
     findRes.then(body => {
         if (body.opponentID == req.body.winnerUUIDSeed) {
             res.send({ winnerName: body.opponentName});
