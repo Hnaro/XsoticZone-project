@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { BackendServiceService } from 'src/app/services/backend-service.service';
 import { TictactoeGamecontrolService } from 'src/app/services/tictactoe-gamecontrol.service';
-
+import { ColRowModel } from 'src/app/model/rowModel';
 @Component({
   selector: 'app-lobby',
   templateUrl: './lobby.component.html',
@@ -42,32 +42,59 @@ export class LobbyComponent implements OnInit {
   private async lobbySetup() {
     if (localStorage.getItem("seshID")) {
       // looking for opponent
-      setInterval(() => {
+      setInterval(async () => {
+        // check reloadStatus session
         // picks whoever turn first
-        this.checkFirstTurn();
+        await this.backendService.findSesh(localStorage.getItem("seshID"))
+        .then(body => {
+          let subs = body.subscribe(async value => {
+            if (value) {
+              let obj: any;
+              obj = value;
+              if (!obj?.data.turnID) {
+                await this.checkFirstTurn();
+              }
+              subs.unsubscribe();
+            }
+          });
+        })
+        this.seshReloadStatusCheck();
         this.checkIfPlayersReady();
         // checks if there is any winner in the current game
-        this.checkWinner();
+        await this.savesTheWinner();
         // gets the hostname for display
-        this.setHostNameView();
+        await this.setHostNameView();
         // setup gamecontrol service
-        this.setupGameControlService();
-        // check reloadStatus session
-        this.seshReloadStatusCheck();
+        await this.setupGameControlService();
         // check if opponent is ready
-        this.checkOpponentIfReady();
+        await this.checkOpponentIfReady();
         // track players movement
-        this.checkOtherPlayerMove()
-      }, 3000);
+        await this.checkOtherPlayerMove();
+        // check who's turn is next
+      }, 1000);
     }
   }
   // gets player move
+  // records the data from the lobby to the player board to check for winner
   private async checkOtherPlayerMove() {
     this.backendService.getPlayerMatchMove(localStorage.getItem("seshID"))
     .then(body => {
       let subs = body.subscribe(value => {
         if (value) {
-          console.log(value);
+          let anonymousObject: Array<any>;
+          // create an array from anonymous object and extract its index from 0 to get the array of values
+          anonymousObject = Object.values(value)[0];
+          anonymousObject?.map((obj) => {
+            // convert string to integer and extrating the number from the string
+            let r = Number.parseInt(String(obj.playerMove).charAt(1));
+            let c = Number.parseInt(String(obj.playerMove).charAt(4));
+            if (this.gameService.hostID == obj.playerID) {
+              this.gameService.playerMove(r,c,"X",obj.playerID);
+            }
+            if (this.gameService.opponentPlayerUUID == obj.playerID) {
+              this.gameService.playerMove(r,c,"O", obj.playerID);
+            }
+          })
           subs.unsubscribe();
         }
       });
@@ -75,10 +102,39 @@ export class LobbyComponent implements OnInit {
   }
   // who will take first turn roll 0 and 1
   private async checkFirstTurn() {
-    if (Math.random() == 0) {
-      // send hostID to session
-    }  else {
-      // send currentUserID to session
+    // this only runs on host
+    if (localStorage.getItem("hostID") && this.gameService.opponentPlayerUUID) {
+      let coin = Math.round(Math.random()) == 0 ? "heads" : "tails";
+      switch (coin) {
+        case "heads":
+          // if heads update sessionTurnID to host
+          if (this.gameService.hostID) {
+          this.backendService.updateSessionTurn(localStorage.getItem("seshID"),  this.gameService.hostID)
+          .then(body => {
+            let subs = body.subscribe(value => {
+              if (value) {
+                console.log(value);
+                subs.unsubscribe();
+              }
+            });
+          });
+        }
+          break;
+        case "tails":
+          // if tails update sessionTurnID to opponent
+          if (this.gameService.opponentPlayerUUID) {
+            this.backendService.updateSessionTurn(localStorage.getItem("seshID"),  this.gameService.opponentPlayerUUID)
+            .then(body => {
+              let subs = body.subscribe(value => {
+                if (value) {
+                  console.log(value);
+                  subs.unsubscribe();
+                }
+              });
+            });
+          }
+          break;
+      }
     }
   }
   // get hostname
@@ -97,16 +153,30 @@ export class LobbyComponent implements OnInit {
         })
       }
   }
-  // check for winner
-  private async checkWinner() {
-    if (this.gameService.checkForWinner(localStorage.getItem("currentUserID"))) {
-      this.gameService.winner = this.gameService.checkForWinner(localStorage.getItem("hostID"));
-      this.backendService.updateWinner(localStorage.getItem("seshID"), this.gameService.winner)
+  // saves the winner to database and updates the view
+  private async savesTheWinner() {
+    if (this.gameService.checkForWinner()) {
+      await this.backendService.updateWinner(localStorage.getItem("seshID"), this.gameService.winner)
       .then(body => {
         let subs = body.subscribe(value => {
-          let obj: any;
-          obj = value;
-          this.waitMessage = "winner is: "+obj.winnerName;
+          if (value) {
+            let obj: any;
+            obj = value;
+            this.waitMessage = this.gameService.winner;
+            subs.unsubscribe()
+          }
+        })
+      });
+    } else {
+      await this.backendService.updateWinner(localStorage.getItem("seshID"), null)
+      .then(body => {
+        let subs = body.subscribe(value => {
+          if (value) {
+            let obj: any;
+            obj = value;
+            this.waitMessage = this.gameService.winner;
+            subs.unsubscribe()
+          }
         })
       });
     }
@@ -151,7 +221,7 @@ export class LobbyComponent implements OnInit {
   }
   // check reload Status
   private async seshReloadStatusCheck() {
-    if (!localStorage.getItem("hostID")) {
+    if (localStorage.getItem("currentUserID")) {
       await this.backendService.findSesh(localStorage.getItem("seshID"))
       .then(body => {
         let subs = body.subscribe( async value => {
@@ -161,16 +231,15 @@ export class LobbyComponent implements OnInit {
             await this.backendService.updateReloadStatus(localStorage.getItem("seshID"))
             .then(body => {
               let subs = body.subscribe(value => {
-                console.log(value);
                 if (value) {
-                    subs.unsubscribe();
+                  subs.unsubscribe();
+                  location.reload();
                 }
               })
             })
             .catch(err => {
               console.log(err);
             });
-              location.reload();
           }
         });
       });
@@ -193,7 +262,6 @@ export class LobbyComponent implements OnInit {
       });
     });
   }
-
   // click functions
   // ends the session
   async endSession() {
@@ -220,9 +288,15 @@ export class LobbyComponent implements OnInit {
     .then(body => {
       let subs = body.subscribe(value => {
         if(value) {
-          console.log("match restarted");
-          location.reload();
+          this.gameService.currPlayerBoard =  new Array<ColRowModel>(9).fill({
+            playerID: undefined,
+            name: undefined,
+            value: undefined
+          });
+          this.gameService.winner = null;
+          console.log(value);
           subs.unsubscribe();
+          location.reload();
         }
       });
     })

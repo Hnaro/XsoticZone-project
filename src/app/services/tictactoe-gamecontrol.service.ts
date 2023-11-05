@@ -55,7 +55,7 @@ export class TictactoeGamecontrolService {
     return this.firstTurn;
   }
   // set and get winner
-  set winner(playerID: string) {
+  set winner(playerID: any) {
     this.winnerUUID = playerID;
   }
   get winner() {
@@ -115,33 +115,31 @@ export class TictactoeGamecontrolService {
     return Math.round(Math.random());
   }
   // determines the winner
-  checkForWinner(playerid: any) {
+  checkForWinner() {
     // check each possible combination of who wins
     // check if 1 wins means X wins
     // check if 0 wins means O wins
-    let currentWinner: any;
-    let winner: any;
-    currentWinner = this.winCombinations.forEach((indexesWinCombination, index) => {
+    this.winCombinations.forEach((indexesWinCombination, index) => {
       if (this.currentPlayerBoardData.at(indexesWinCombination[0])?.value == 1 &&
       this.currentPlayerBoardData.at(indexesWinCombination[1])?.value == 1 &&
       this.currentPlayerBoardData.at(indexesWinCombination[2])?.value == 1) {
         // if X wins
-        winner = this.currentPlayerBoardData.at(index)?.playerID;
+        this.winner = this.currentPlayerBoardData.at(index)?.playerID;
       }
       if (this.currentPlayerBoardData.at(indexesWinCombination[0])?.value == 0 &&
       this.currentPlayerBoardData.at(indexesWinCombination[1])?.value == 0 &&
       this.currentPlayerBoardData.at(indexesWinCombination[2])?.value == 0) {
         // if O wins
-        winner = this.currentPlayerBoardData.at(index)?.playerID;
+        this.winner = this.currentPlayerBoardData.at(index)?.playerID;
       }
-      if (!winner && index == 7) {
+      if (!this.winner && index == 7) {
         return undefined;
       }
-      if (winner && index == 7){
-        return winner;
+      if (this.winner && index == 7){
+        return this.winner;
       }
     });
-    return winner;
+    return this.winner;
   }
   // record the values
   private recordData(column: number,

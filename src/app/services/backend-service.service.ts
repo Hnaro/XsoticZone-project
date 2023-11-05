@@ -19,9 +19,16 @@ export class BackendServiceService {
       sessionUUIDSeed: sessionID
     });
   }
+  // update session turn
+  async updateSessionTurn(sessionID: any, sessionTurnID: any) {
+    return await this.http.post(this.defaultUrl+"t/updateSessionTurn", {
+      sessionUUIDSeed: sessionID,
+      sessionTurnID: sessionTurnID
+    });
+  }
   // update winner
   async updateWinner(sessionID: any, playerID: any) {
-    return await this.http.post(this.defaultUrl+"t/sessionWinner", {
+    return await this.http.post(this.defaultUrl+"t/updateSessionWinner", {
       sessionUUIDSeed: sessionID,
       winnerUUIDSeed: playerID
     })
