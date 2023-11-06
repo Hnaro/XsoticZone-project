@@ -29,7 +29,7 @@
   width: 100vw;
   bottom: 0;
   color: white;
-  box-shadow: inset 0.1rem 3.7rem 0.5rem black;
+  box-shadow: inset 0rem 3.7rem 0.5rem black;
 }
 #sectionBar-Container {
   width: 100vw;
@@ -38,7 +38,7 @@
 #sectionBar-Container button {
   font-size: 18px;
   font-weight: bold;
-  margin-right: 2rem;
+  margin-right: rem;
   border: 0;
 }
 .isActive {
@@ -46,7 +46,7 @@
   transform: translateY(0.7rem);
   padding: 1em;
   color: white;
-  box-shadow: inset 0.3rem 0.5rem 0.5rem rgb(109, 47, 47);
+  box-shadow: inset 0.1rem 0.5rem 0.5rem rgb(109, 47, 47);
 }
 .defaultStyleBtn {
   color: #655EB6;
