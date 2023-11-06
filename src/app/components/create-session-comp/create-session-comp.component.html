@@ -1,8 +1,8 @@
-<div id="createSesh-container">
+<div id="createSesh-outerContainer">
   <div *ngIf="!seshID">
     <h1>Create Session</h1>
     <span style="color: red" *ngIf="errMessage">{{ errMessage }}</span><br>
-    <input (focus)="onFocus()" [(ngModel)]="hostname" type="text" id="hostName" name="hostName" placeholder="Enter Host Name">
+    <input (focus)="onFocus()" [(ngModel)]="hostname" type="text" id="hostName" name="hostName" placeholder="Enter as?">
     <button (click)="onCreate()">Create</button>
   </div>
   <div *ngIf="seshID">

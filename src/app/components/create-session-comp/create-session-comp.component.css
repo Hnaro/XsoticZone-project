@@ -1,0 +1,31 @@
+#createSesh-outerContainer {
+}
+#createSesh-outerContainer h1 {
+  margin-left: 2em;
+  margin-top: 2em;
+  font-size: 16px;
+}
+#createSesh-outerContainer input {
+  margin-left: 2em;
+  border: 0;
+  outline: none;
+}
+#createSesh-outerContainer input[type=text] {
+  font-family: 'Inter', sans-serif;
+  color: #353535;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 0.5em;
+  border: 0;
+}
+#createSesh-outerContainer button {
+  margin-left: 2em;
+  border: 0;
+  outline: none;
+  background-color: #FF5E5E;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 1em;
+  box-shadow: 0.1em 0.1em 0.2em #923131;
+}
