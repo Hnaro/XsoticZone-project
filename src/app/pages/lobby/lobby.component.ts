@@ -262,6 +262,7 @@ export class LobbyComponent implements OnInit {
       });
     });
   }
+  
   // click functions
   // ends the session
   async endSession() {

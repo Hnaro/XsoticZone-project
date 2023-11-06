@@ -21,6 +21,7 @@
   <div *ngIf="isHostActive">
     <button *ngIf="isReady" (click)="onRestart()"> restart game </button>
   </div>
+  <!-- create a an active and unactive status for each session -->
   <app-tictactoe-board></app-tictactoe-board>
   <div *ngIf="isHostActive">
     <button *ngIf="!isReady" (click)="onStart()">Start Game</button>
