@@ -40,6 +40,7 @@ export class CreateSessionCompComponent implements DoCheck {
               obj.res.opponentID);
             if (!localStorage.getItem("seshID")) {
               localStorage.setItem("hostID", obj.res.hostID);
+              localStorage.setItem("localUser", obj.res.hostName);
               localStorage.setItem("seshID",obj.res.sessionID);
             }
             subs.unsubscribe();

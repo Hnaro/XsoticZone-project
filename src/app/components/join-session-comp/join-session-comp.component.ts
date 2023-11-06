@@ -34,6 +34,7 @@ export class JoinSessionCompComponent implements DoCheck{
               this.gameControlService.hostname = obj.data.hostName;
               localStorage.setItem("seshID", obj.data.sessionID);
               localStorage.setItem("currentUserID", obj.data.opponentID)
+              localStorage.setItem("localUser", obj.data.opponentName)
               this.router.navigate(['/lobby'])
               subs.unsubscribe();
             }

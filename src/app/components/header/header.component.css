@@ -27,4 +27,13 @@
   height: 30px;
   filter: drop-shadow(1em, 1em, 1em black);
 }
+#header-container h3 {
+  position:sticky;
+  width: 100%;
+  text-align: right;
+  font-size: 24px;
+  color: white;
+  transform: translateY(-3em) translateX(-1em);
+  margin-right: 2em;
+}
 

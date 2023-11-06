@@ -1,0 +1,34 @@
+#joinSesh-outerContainer h1 {
+    margin-left: 2em;
+    margin-top: 2em;
+    font-size: 16px;
+}
+#joinSesh-outerContainer input {
+    margin-left: 2em;
+    width: 80%;
+    border: 0;
+    border-radius: 0.5em;
+    outline: none;
+    margin-top: 1em;
+}
+#joinSesh-outerContainer input[type=text] {
+    font-family: 'Inter', sans-serif;
+    color: #353535;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0.5em;
+    border: 0;
+}
+#joinSesh-outerContainer button {
+    margin-right: 2em;
+    float: right;
+    margin-left: 3em;
+    border: 0;
+    outline: none;
+    background-color: #FF5E5E;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 1em;
+    box-shadow: 0.1em 0.1em 0.2em #923131;
+}

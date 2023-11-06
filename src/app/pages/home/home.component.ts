@@ -14,10 +14,16 @@ export class HomeComponent implements OnInit {
     i: any;
     @Input() anyWinner: any;
 
+    // show create tab
+    isCreateActive: boolean = false;
+    // show join tab
+    isJoinActive: boolean = false;
     constructor(private router: Router,
       private backendService: BackendServiceService,
       private gameService: TictactoeGamecontrolService) {}
     ngOnInit(): void {
+      //default active button
+      this.isCreateActive = true;
         // checks if current page has an active session to reroute
         // to the lobby
         let i = setInterval(() => {
@@ -29,5 +35,15 @@ export class HomeComponent implements OnInit {
         this.router.navigate(['/lobby'])
         clearInterval(i);
       }
+    }
+    // display the create tab
+    showCreateTab() {
+      this.isCreateActive = true;
+      this.isJoinActive = false;
+    }
+    // display the join tab
+    showJoinTab() {
+      this.isCreateActive = false;
+      this.isJoinActive = true;
     }
 }

@@ -15,6 +15,8 @@ import { LobbyComponent } from './pages/lobby/lobby.component';
 import { AboutComponent } from './pages/about/about.component';
 import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './pages/home/home.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { HomeComponent } from './pages/home/home.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    ClipboardModule
   ],
   providers: [BackendServiceService, TictactoeGamecontrolService],
   bootstrap: [AppComponent]

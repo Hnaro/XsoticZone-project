@@ -11,10 +11,14 @@
   </div>
   <div id="createJoinSession-outerContainer">
     <div id="sectionBar-Container">
-      <button class="isActive">Create</button>
-      <button class="defaultStyleBtn">Join</button>
+      <button (click)="showCreateTab()" 
+      [class.defaultStyleBtn]="!isCreateActive"
+      [class.isActive]="isCreateActive">Create</button>
+      <button (click)="showJoinTab()"
+      [class.defaultStyleBtn]="!isJoinActive"
+      [class.isActive]="isJoinActive">Join</button>
     </div>
-    <app-create-session-comp></app-create-session-comp>
-    <!-- <app-join-session-comp></app-join-session-comp> -->
+    <app-create-session-comp [hidden]="!isCreateActive"></app-create-session-comp>
+    <app-join-session-comp [hidden]="!isJoinActive"></app-join-session-comp>
   </div>
 </div>
