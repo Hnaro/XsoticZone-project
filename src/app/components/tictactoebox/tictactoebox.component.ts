@@ -63,6 +63,10 @@ export class TictactoeboxComponent implements OnInit{
   }
 
   onClick() {
+    // create a control here that everytime you clicked a tile should send to game control service
+    // temporary variable or remove data on temporary variable if temporary variable
+    // has current user id then can click
+  
     // cannot click when current tile has value
     // opponent is not ready then game cannot start
     this.backendService.getMatchStatus(localStorage.getItem("seshID"),
