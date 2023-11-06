@@ -1,11 +1,30 @@
 #header-container {
     width: 100% auto;
-    border: 0.2em solid black;
+    background: linear-gradient(to bottom, #655EB6 50%, #FF0000 500%);
+    font-family: 'Inter', sans-serif;
+    height: 111px;
 }
-nav ul {
-    display: flex;
-    list-style-type: none;
+#logo-container {
+  display: flex;
+  padding-top: 2em;
+  padding-left: 1em;
 }
-#links-icon-container {
-    display: flex;
+#logo-container h1 {
+  color: white;
+  font-size: 24px;
+  font-weight: 900;
 }
+#logo-container #tac-Style {
+  color: #7870DA;
+}
+#logo-container #toe-Style {
+  color: #FF5E5E;
+}
+#logo-container img {
+  align-self: center;
+  margin: 1em;
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(1em, 1em, 1em black);
+}
+
