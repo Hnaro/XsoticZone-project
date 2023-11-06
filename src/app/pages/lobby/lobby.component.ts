@@ -203,7 +203,7 @@ export class LobbyComponent implements OnInit {
       });
     });
   }
-  // check if opponent is ready
+  // updates local data
   private async checkOpponentIfReady() {
     this.backendService.getMatchStatus(localStorage.getItem("seshID"),
     this.gameService.opponentPlayerUUID)
@@ -262,7 +262,7 @@ export class LobbyComponent implements OnInit {
       });
     });
   }
-  
+
   // click functions
   // ends the session
   async endSession() {
