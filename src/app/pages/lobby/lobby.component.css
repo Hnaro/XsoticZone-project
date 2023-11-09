@@ -1,0 +1,51 @@
+/* mobile view */
+#lobby-outerContainer {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+#currentUser-container {
+    clear: both;
+    height: 50px;
+    background: #FF6C6C;
+    color: white;
+}
+#currentUserName-container {
+    float: left;
+    display:inline-flex;
+    align-items: center;
+}
+#currentUser-container h4 {
+    font-size: 24px;
+    padding: 0.5em 0em 0em 0.3em;
+}
+#currentUser-container img {
+    width: 24.61px;
+    height: 30.94px;
+    padding: 0em 0em 0em 0.3em;
+}
+#currentUserBtn-container button {
+    background-color: #FF6C6C;
+    border-radius: 0.5em;
+    border: 0;
+    color: white;
+    margin: 0.2em 0.5em 0em 0.2em;
+    padding: 0.2em;
+    font-size: 24px;
+    box-shadow: 0.1em 0.1em 0.1em #a54545;
+}
+#currentUserBtn-container button:hover {
+    box-shadow: 0em 0em 0.2em #9b4040;
+    cursor: pointer;
+}
+#currentUserBtn-container {
+    align-self:center;
+    float: right;
+    display: inline-flex;
+}
+#currentUserBtn-container img {
+    width:20.88px;
+    padding: 1em 0.5em 0em 0em;
+    height: 20.88px;
+}

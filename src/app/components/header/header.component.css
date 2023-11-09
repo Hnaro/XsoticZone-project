@@ -3,14 +3,18 @@
     background: linear-gradient(to bottom, #655EB6 50%, #FF0000 500%);
     font-family: 'Inter', sans-serif;
     height: 111px;
+    display: block;
+    position: sticky;
+    box-shadow: 0.1em 0.1em 0.1em rgb(162, 64, 64);
 }
 #logo-container {
   display: flex;
-  padding-top: 2em;
   padding-left: 1em;
 }
 #logo-container h1 {
   color: white;
+  padding: 0em 0em 0em 0.5em;
+  transform: translateY(0.4em);
   font-size: 24px;
   font-weight: 900;
 }
@@ -22,18 +26,27 @@
 }
 #logo-container img {
   align-self: center;
-  margin: 1em;
   width: 30px;
   height: 30px;
   filter: drop-shadow(1em, 1em, 1em black);
 }
-#header-container h3 {
-  position:sticky;
-  width: 100%;
-  text-align: right;
-  font-size: 24px;
-  color: white;
-  transform: translateY(-3em) translateX(-1em);
-  margin-right: 2em;
+#copySeshID-container {
+  display: flex;
 }
+#copySeshID-container h2 {
+  margin: 1em 0em 0em 1em;
+  font-size: 16px;
+  color: white;
+}
+#copySeshID-container img {
+  padding: 1.5em 0em 0em 0.5em;
+  width: 14px;
+  height: 17px;
+  filter: drop-shadow(1px 1px 1px #3d386c);
+}
+#copySeshID-container img:hover {
+  cursor: pointer;
+  filter: drop-shadow(1.5px 0px 1.5px #3d386c);
+}
+
 

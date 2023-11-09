@@ -41,6 +41,10 @@
   margin-right: 2rem;
   border: 0;
 }
+#sectionBar-Container button:hover {
+  cursor: pointer;
+  color: #cecce8;
+}
 .isActive {
   background-color: #FF5E5E;
   padding: 1em;

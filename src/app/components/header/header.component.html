@@ -1,8 +1,10 @@
 <header id="header-container">
+  <div *ngIf="sessionActive" id="copySeshID-container">
+    <h2>sessionID</h2><img (click)="onCopy()" [src]="icon" alt="">
+  </div>
   <div id="logo-container">
     <img src="../../../assets/images/tictactoeLogo.jpg" alt="">
     <h1>Tic<span id="tac-Style">Tac</span>
       <span id="toe-Style">Toe</span></h1>
   </div>
-  <h3>{{ localUser }}</h3>
 </header>

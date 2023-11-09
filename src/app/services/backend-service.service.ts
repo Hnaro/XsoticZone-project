@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BackendServiceService {
 
-  defaultUrl: string = "http://10.44.216.122:4000/";
+  defaultUrl: string = "http://10.44.216.91:4000/";
   constructor(private http: HttpClient) {}
 
   // check backend connection

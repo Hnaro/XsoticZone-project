@@ -24,7 +24,8 @@ export class LobbyComponent implements OnInit {
   @Input() waitMessage: any | undefined;
   // for host only
   isOpponentReady: boolean = false;
-
+  // sessio user
+  currentUser: any;
   constructor(private router: Router, private gameService:
     TictactoeGamecontrolService, private backendService:
     BackendServiceService) {}
@@ -41,6 +42,8 @@ export class LobbyComponent implements OnInit {
   // lobby game setup
   private async lobbySetup() {
     if (localStorage.getItem("seshID")) {
+      // gets the currentUser
+      this.currentUser = localStorage.getItem("localUser");
       // looking for opponent
       setInterval(async () => {
         // check reloadStatus session

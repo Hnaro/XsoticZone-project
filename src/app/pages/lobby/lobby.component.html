@@ -1,12 +1,14 @@
-<div id="lobby-container">
-  <div *ngIf="isHostActive">
-    <button (click)="endSession()">End Session</button>
-  </div>
-
+<div id="lobby-outerContainer">
   <!-- display the session id hostname  -->
-  <div *ngIf="sessionID || isOpponentJoin">
-    <h4>CurrentSession ID: {{ sessionID }}</h4>
-    <h4>Host Name: {{ hostname }}</h4>
+  <div id="currentUser-container" *ngIf="sessionID || isOpponentJoin && isHostActive">
+    <div id="currentUserName-container">
+      <img loading="lazy" src="../../../assets/images/userIcon.jpg" alt=""> 
+      <h4>{{ currentUser }}</h4>
+    </div>
+    <div id="currentUserBtn-container">
+      <img loading="lazy" src="../../../assets/images/endSeshIcon.jpg" alt="">
+      <button (click)="endSession()">End Session</button>
+    </div>
   </div>
   <div *ngIf="!isOpponentJoin && isHostActive; else showInfo">
     <h2>waiting for opponent...</h2>
